@@ -16,7 +16,16 @@
       <imported>true</imported>
       <remarks>$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml</remarks>
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
-      <jdbc-url>jdbc:sqlserver://localhost;database=NQS;encrypt=false</jdbc-url>
+      <jdbc-url>jdbc:sqlserver://SUSMID8000;database=Manufacturing;encrypt=false</jdbc-url>
+      <driver-properties>
+        <property name="applicationName" value="DataGrip" />
+      </driver-properties>
+    </data-source>
+    <data-source source="LOCAL" name="Manufacturing@SUSMID8000" uuid="7bf5144a-3f8e-43fb-aa05-cbff58e0c929">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://SUSMID8000;database=Manufacturing;encrypt=false</jdbc-url>
       <driver-properties>
         <property name="applicationName" value="DataGrip" />
       </driver-properties>

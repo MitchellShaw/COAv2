@@ -34,7 +34,7 @@
 .label
 {
     -fx-text-fill: white;
-    -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);
+    -fx-effect: dropshadow(gaussian, black, 1, 0.5, 1, 1);
 
 }
 

@@ -169,15 +169,20 @@ public class AssignCOAViewController implements Initializable
                 coa.setOrder(order);
                 coa.setUnitSerialNumber(serialNumberTextField.getText());
                 coa.setUnit(unit);
+                coa.setOperatorID(operator);
+                coa.setProductID(productIDTextField.getText());
+                coa.setScheduleNumber(Integer.parseInt(scheduleNumberTextField.getText()));
                 operator.addCOA(coa);
                 order.addCOA(coa);
                 unit.setCoa(coa);
+                unit.setCoaOrder(order);
                 session.save(coa);
                 session.save(order);
                 session.save(operator);
                 session.save(unit);
                 session.getTransaction().commit();
                 session.close();
+                new Alert(Alert.AlertType.INFORMATION, MessageFormat.format("COA: {1}\nSerial number: {2}\nSchedule number: {3}", coaSerialTextField.getText(), serialNumberTextField.getText(), scheduleNumberTextField.getText()),ButtonType.CLOSE).showAndWait();
                 Platform.runLater(() ->
                 {
                     osTextField.setText("");
@@ -185,7 +190,6 @@ public class AssignCOAViewController implements Initializable
                     serialNumberTextField.setText("");
                     scheduleNumberTextField.setText("");
                     orderNumberTextField.setText("");
-                    new Alert(Alert.AlertType.INFORMATION, MessageFormat.format("COA: {1}\nSerial number: {2}\nSchedule number: {3}", coaSerialTextField.getText(), serialNumberTextField.getText(), scheduleNumberTextField.getText()),ButtonType.CLOSE).showAndWait();
                 });
             }
         }

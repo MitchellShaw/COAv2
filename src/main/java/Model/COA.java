@@ -25,6 +25,39 @@ public class COA
     private Operator operatorID;
     @OneToOne(mappedBy = "coa")
     private Unit unit;
+    private String productID;
+    @Column(unique = true)
+    private int scheduleNumber;
+
+    /**
+     * Setter for property 'coaOrder'.
+     *
+     * @param coaOrder Value to set for property 'coaOrder'.
+     */
+    public void setCoaOrder(COAOrder coaOrder)
+    {
+        this.coaOrder = coaOrder;
+    }
+
+    /**
+     * Getter for property 'productID'.
+     *
+     * @return Value for property 'productID'.
+     */
+    public String getProductID()
+    {
+        return productID;
+    }
+
+    /**
+     * Setter for property 'productID'.
+     *
+     * @param productID Value to set for property 'productID'.
+     */
+    public void setProductID(String productID)
+    {
+        this.productID = productID;
+    }
 
     /**
      * Getter for property 'coaOrder'.
@@ -158,15 +191,29 @@ public class COA
         this.unitSerialNumber = unitSerialNumber;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Getter for property 'scheduleNumber'.
+     *
+     * @return Value for property 'scheduleNumber'.
+     */
+    public int getScheduleNumber()
+    {
+        return scheduleNumber;
+    }
+
+    /**
+     * Setter for property 'scheduleNumber'.
+     *
+     * @param scheduleNumber Value to set for property 'scheduleNumber'.
+     */
+    public void setScheduleNumber(int scheduleNumber)
+    {
+        this.scheduleNumber = scheduleNumber;
+    }
+
     @Override
     public String toString()
     {
-        return "COA{" +
-                "serialNumber='" + serialNumber + '\'' +
-                ", order=" + coaOrder +
-                ", unitSerialNumber=" + unitSerialNumber +
-                ", operatingSystem='" + operatingSystem + '\'' +
-                '}';
+        return "COA{" + "serialNumber='" + serialNumber + '\'' + ", coaOrder=" + coaOrder + ", unitSerialNumber='" + unitSerialNumber + '\'' + ", operatingSystem='" + operatingSystem + '\'' + ", operatorID=" + operatorID + ", unit=" + unit + ", productID='" + productID + '\'' + ", scheduleNumber=" + scheduleNumber + '}';
     }
 }

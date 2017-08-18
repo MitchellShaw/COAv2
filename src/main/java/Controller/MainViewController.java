@@ -46,6 +46,9 @@ public class MainViewController implements Initializable
     @FXML // fx:id="checkOrderStatusButton"
     private Button checkOrderStatusButton; // Value injected by FXMLLoader
 
+    @FXML // fx:id="addOperatorButton"
+    private Button addOperatorButton; // Value injected by FXMLLoader
+
     @FXML
     void assignCOAs(ActionEvent event) throws IOException
     {
@@ -64,7 +67,8 @@ public class MainViewController implements Initializable
     }
 
     @FXML
-    void checkOrder(ActionEvent event) {
+    void checkOrder(ActionEvent event)
+    {
 
     }
 
@@ -86,12 +90,19 @@ public class MainViewController implements Initializable
     }
 
     @FXML
+    void addOperator(ActionEvent event) {
+
+    }
+
+    @FXML
     private // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert gridP != null : "fx:id=\"gridP\" was not injected: check your FXML file 'MainView.fxml'.";
         assert createOrderButton != null : "fx:id=\"createOrderButton\" was not injected: check your FXML file 'MainView.fxml'.";
         assert assignCOAsButton != null : "fx:id=\"assignCOAsButton\" was not injected: check your FXML file 'MainView.fxml'.";
         assert checkOrderStatusButton != null : "fx:id=\"checkOrderStatusButton\" was not injected: check your FXML file 'MainView.fxml'.";
+        assert addOperatorButton != null : "fx:id=\"addOperatorButton\" was not injected: check your FXML file 'MainView.fxml'.";
+
     }
 
     /**

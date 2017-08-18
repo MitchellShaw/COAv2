@@ -20,6 +20,30 @@ public class Unit
     @JoinColumn(name = "LinkedCOA")
     private COA coa;
 
+    @OneToOne
+    @JoinColumn(name = "orderNumber")
+    private COAOrder coaOrder;
+
+    /**
+     * Getter for property 'coaOrder'.
+     *
+     * @return Value for property 'coaOrder'.
+     */
+    public COAOrder getCoaOrder()
+    {
+        return coaOrder;
+    }
+
+    /**
+     * Setter for property 'coaOrder'.
+     *
+     * @param coaOrder Value to set for property 'coaOrder'.
+     */
+    public void setCoaOrder(COAOrder coaOrder)
+    {
+        this.coaOrder = coaOrder;
+    }
+
     /**
      * Getter for property 'scheduleNumber'.
      *
