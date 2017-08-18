@@ -1,0 +1,45 @@
+.button
+{
+    -fx-background-color:
+            linear-gradient(rgba(85,184,73,1), rgba(85,184,73,1)),
+            radial-gradient(center 50% -40%, radius 200%, rgba(85,184,73,1) 45%, rgba(85,184,73,1) 50%);
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: white;
+}
+
+.button:hover
+{
+    -fx-background-color:
+            linear-gradient(rgba(85,184,73,1), rgba(85,184,73,1)),
+            radial-gradient(center 50% -40%, radius 200%, rgba(85,184,73,1) 45%, rgba(85,184,73,1) 50%);
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 1 , 1 , 1 );
+    -fx-text-fill: white;
+}
+
+.button:pressed
+{
+    -fx-background-color:
+            linear-gradient(rgba(85,184,73,1), rgba(85,184,73,1)),
+            radial-gradient(center 50% -40%, radius 200%, rgba(55, 138, 132,1) 45%, rgba(55, 138, 132,1) 50%);
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 2 , 1 , 1 );
+    -fx-text-fill: white;
+}
+
+.label
+{
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, black, 1, 1, 1, 1);
+
+}
+
+#gridP
+{
+    -fx-background-color: rgba(55,138,132,1);
+}
+
