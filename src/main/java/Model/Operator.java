@@ -1,6 +1,7 @@
 package Model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 public class Operator
 {
     /**
-     * Variable to hol the RQSID of the operator
+     * Variable to hold the RQSID of the operator
      */
     @Id
     @Column(unique = true)
@@ -96,7 +97,21 @@ public class Operator
      */
     public List<COA> getCoaList()
     {
+        if(coaList == null)
+            coaList = new ArrayList<>();
         return coaList;
+    }
+
+    /**
+     * @param _coa COA object to be added to Operators list of COA's the operator has staged
+     * @return Returns true if successful
+     */
+    public boolean addCOA(COA _coa)
+    {
+        if(coaList == null)
+            coaList = new ArrayList<>();
+        coaList.add(_coa);
+        return true;
     }
 
     /**

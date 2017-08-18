@@ -86,6 +86,7 @@ public class CreateOrderViewController implements Initializable
         coaOrder.setScheduleShipDate(datePicker.getValue());
         coaOrder.setCoaList(new ArrayList<COA>());
         coaOrder.setNumberOfUnits(Integer.parseInt(countUnitFields.getText()));
+        coaOrder.setFinished(false);
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
         session.save(coaOrder);
@@ -163,7 +164,6 @@ public class CreateOrderViewController implements Initializable
             }
         });
     }
-
 
     /**
      * @param _tf TextFieldObject that needs to be numeric up to 3 digits

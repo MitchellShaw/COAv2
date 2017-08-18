@@ -4,6 +4,7 @@ import org.hibernate.annotations.Columns;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +35,29 @@ public class COAOrder
      */
     @Column(name = "count")
     private int numberOfUnits;
+
+    @Column(name = "completed")
+    private boolean isFinished;
+
+    /**
+     * Getter for property 'finished'.
+     *
+     * @return Value for property 'finished'.
+     */
+    public boolean isFinished()
+    {
+        return isFinished;
+    }
+
+    /**
+     * Setter for property 'finished'.
+     *
+     * @param finished Value to set for property 'finished'.
+     */
+    public void setFinished(boolean finished)
+    {
+        isFinished = finished;
+    }
 
     /**
      * Getter for property 'orderNumber'.
@@ -82,7 +106,21 @@ public class COAOrder
      */
     public List<COA> getCoaList()
     {
+        if(coaList == null)
+            coaList = new ArrayList<>();
         return coaList;
+    }
+
+    /**
+     * @param _coa COA object to be added to the list
+     * @return Returns true if successful, false if it's not
+     */
+    public boolean addCOA(COA _coa)
+    {
+        if(coaList == null)
+            coaList = new ArrayList<>();
+        coaList.add(_coa);
+        return true;
     }
 
     /**
@@ -115,9 +153,6 @@ public class COAOrder
         this.numberOfUnits = numberOfUnits;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString()
     {
@@ -126,6 +161,7 @@ public class COAOrder
                 ", scheduleShipDate=" + scheduleShipDate +
                 ", coaList=" + coaList +
                 ", numberOfUnits=" + numberOfUnits +
+                ", isFinished=" + isFinished +
                 '}';
     }
 }

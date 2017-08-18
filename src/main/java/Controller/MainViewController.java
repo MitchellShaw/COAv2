@@ -47,8 +47,20 @@ public class MainViewController implements Initializable
     private Button checkOrderStatusButton; // Value injected by FXMLLoader
 
     @FXML
-    void assignCOAs(ActionEvent event) {
-
+    void assignCOAs(ActionEvent event) throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AssignCOAView.fxml"));
+        AssignCOAViewController assignCOAViewController = new AssignCOAViewController(sessionFactory);
+        loader.setController(assignCOAViewController);
+        GridPane pane = loader.load();
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        stage.setResizable(false);
+        stage.setTitle("Assign COA Form");
+        stage.setScene(new Scene(pane));
+        Functions.setUpIcons(stage);
+        assignCOAViewController.setStage(stage);
+        stage.setOnCloseRequest(event1 -> stage.close());
+        stage.showAndWait();
     }
 
     @FXML

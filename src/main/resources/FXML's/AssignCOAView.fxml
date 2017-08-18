@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane fx:id="gridP" hgap="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="421.0" stylesheets="@../Stylesheets/MainStyle.css" vgap="5.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65">
+  <columnConstraints>
+    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" percentHeight="11.111111111" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label text="Assign COA's to Units" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="coaSerialLabel" text="COA Serial" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="productIDLabel" layoutX="128.0" layoutY="64.0" text="Product ID" GridPane.rowIndex="2">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="serialNumberLabel" text="Serial Number" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="scheduleNumberLabel" text="Schedule Number" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="orderNumberLabel" text="Order Number" GridPane.rowIndex="5">
+         <font>
+            <Font size="18.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label fx:id="operatorLabel" text="Operator" GridPane.rowIndex="7">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="osLabel" text="Operating System" GridPane.rowIndex="6">
+         <font>
+            <Font size="18.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </Label>
+      <TextField fx:id="coaSerialTextField" promptText="XXX-XXXXXX-XXXX" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="16.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="productIDTextField" layoutX="223.0" layoutY="59.0" promptText="7702MC1234" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="serialNumberTextField" promptText="Serial on Unit" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="16.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="scheduleNumberTextField" promptText="Schedule # on Ticket" GridPane.columnIndex="1" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="16.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="orderNumberTextField" layoutX="199.0" layoutY="168.0" promptText="Enter Order Number" GridPane.columnIndex="1" GridPane.rowIndex="5">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="operatorTextField" layoutX="199.0" layoutY="153.0" promptText="Enter your RQSID" GridPane.columnIndex="1" GridPane.rowIndex="7">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <TextField fx:id="osTextField" layoutX="187.0" layoutY="203.0" promptText="Enter OS type" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </TextField>
+      <ButtonBar prefHeight="40.0" prefWidth="379.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="8">
+        <buttons>
+          <Button fx:id="exitButton" cancelButton="true" mnemonicParsing="false" onAction="#closeStage" text="Exit">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="clearButton" defaultButton="true" layoutX="303.0" layoutY="20.0" mnemonicParsing="false" onAction="#clearField" text="Clear">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="submitButton" layoutX="303.0" layoutY="20.0" mnemonicParsing="false" onAction="#sendToDatabase" text="Submit">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+        </buttons>
+         <padding>
+            <Insets right="5.0" />
+         </padding>
+         <GridPane.margin>
+            <Insets bottom="5.0" />
+         </GridPane.margin>
+      </ButtonBar>
+   </children>
+</GridPane>

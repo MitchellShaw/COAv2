@@ -14,10 +14,10 @@ public class COA
     @Column(unique = true)
     private String serialNumber;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Order")
+    @JoinColumn(name = "COAOrder_Order")
     private COAOrder coaOrder;
     @Column(unique = true, name = "UnitSerial")
-    private int unitSerialNumber;
+    private String unitSerialNumber;
     @Column(name = "OS")
     private String operatingSystem;
     @ManyToOne
@@ -25,6 +25,57 @@ public class COA
     private Operator operatorID;
     @OneToOne(mappedBy = "coa")
     private Unit unit;
+
+    /**
+     * Getter for property 'coaOrder'.
+     *
+     * @return Value for property 'coaOrder'.
+     */
+    public COAOrder getCoaOrder()
+    {
+        return coaOrder;
+    }
+
+
+    /**
+     * Getter for property 'operatorID'.
+     *
+     * @return Value for property 'operatorID'.
+     */
+    public Operator getOperatorID()
+    {
+        return operatorID;
+    }
+
+    /**
+     * Setter for property 'operatorID'.
+     *
+     * @param operatorID Value to set for property 'operatorID'.
+     */
+    public void setOperatorID(Operator operatorID)
+    {
+        this.operatorID = operatorID;
+    }
+
+    /**
+     * Getter for property 'unit'.
+     *
+     * @return Value for property 'unit'.
+     */
+    public Unit getUnit()
+    {
+        return unit;
+    }
+
+    /**
+     * Setter for property 'unit'.
+     *
+     * @param unit Value to set for property 'unit'.
+     */
+    public void setUnit(Unit unit)
+    {
+        this.unit = unit;
+    }
 
     /**
      * Getter for property 'operatingSystem'.
@@ -92,7 +143,7 @@ public class COA
      *
      * @return Value for property 'unitSerialNumber'.
      */
-    public int getUnitSerialNumber()
+    public String getUnitSerialNumber()
     {
         return unitSerialNumber;
     }
@@ -102,11 +153,12 @@ public class COA
      *
      * @param unitSerialNumber Value to set for property 'unitSerialNumber'.
      */
-    public void setUnitSerialNumber(int unitSerialNumber)
+    public void setUnitSerialNumber(String unitSerialNumber)
     {
         this.unitSerialNumber = unitSerialNumber;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString()
     {

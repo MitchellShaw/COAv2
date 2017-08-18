@@ -43,3 +43,8 @@
     -fx-background-color: rgba(55,138,132,1);
 }
 
+.text-field
+{
+    -fx-text-alignment: center;
+}
+
