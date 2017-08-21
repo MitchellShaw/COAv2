@@ -3,7 +3,6 @@ import Model.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.hibernate.SessionFactory;
@@ -88,7 +87,7 @@ public class App extends Application
      */
     private void setupHibernate()
     {
-        Configuration configuration = new Configuration().addAnnotatedClass(COA.class).addAnnotatedClass(COAOrder.class).addAnnotatedClass(Operator.class).addAnnotatedClass(Unit.class).configure();
+        Configuration configuration = new Configuration().addAnnotatedClass(COA.class).addAnnotatedClass(Order.class).addAnnotatedClass(Operator.class).addAnnotatedClass(Unit.class).configure();
 
         configuration.configure("hibernate.cfg.xml");
 

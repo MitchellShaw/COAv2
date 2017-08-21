@@ -7,10 +7,13 @@ import java.util.ResourceBundle;
 
 import Model.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.hibernate.Query;
@@ -33,57 +36,64 @@ public class AssignCOAViewController implements Initializable
      */
     private SessionFactory sessionFactory;
 
+    private Order order;
 
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
+    private Operator operator;
 
-    @FXML // ResourceBundle that was given to the FXMLLoader
-    private ResourceBundle resources;
+    private static double xOffset = 0;
+    private static double yOffset = 0;
 
-    @FXML // fx:id="coaSerialLabel"
-    private Label coaSerialLabel; // Value injected by FXMLLoader
-
-    @FXML // fx:id="serialNumberLabel"
-    private Label serialNumberLabel; // Value injected by FXMLLoader
-
-    @FXML // fx:id="scheduleNumberLabel"
-    private Label scheduleNumberLabel; // Value injected by FXMLLoader
-
-    @FXML // fx:id="operatorLabel"
-    private Label operatorLabel; // Value injected by FXMLLoader
-
-    @FXML // fx:id="orderNumberLabel"
-    private Label orderNumberLabel; // Value injected by FXMLLoader
-
-    @FXML // fx:id="productIDLabel"
-    private Label productIDLabel; // Value injected by FXMLLoader
-
-    @FXML // fx:id="osLabel"
-    private Label osLabel; // Value injected by FXMLLoader
 
     @FXML // fx:id="gridP"
     private GridPane gridP; // Value injected by FXMLLoader
 
-    @FXML // fx:id="coaSerialTextField"
-    private TextField coaSerialTextField; // Value injected by FXMLLoader
+    @FXML // fx:id="serialNumberLabel"
+    private Label serialNumberLabel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="productIDLabel"
+    private Label productIDLabel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="modelNumberLabel"
+    private Label modelNumberLabel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="scheduleNumberLabel"
+    private Label scheduleNumberLabel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="orderNumberLabel"
+    private Label orderNumberLabel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="osLabel"
+    private Label osLabel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="operatorLabel"
+    private Label operatorLabel; // Value injected by FXMLLoader
+
+    @FXML // fx:id="coaSerialLabel"
+    private Label coaSerialLabel; // Value injected by FXMLLoader
 
     @FXML // fx:id="serialNumberTextField"
     private TextField serialNumberTextField; // Value injected by FXMLLoader
 
+    @FXML // fx:id="productIDTextField"
+    private TextField productIDTextField; // Value injected by FXMLLoader
+
+    @FXML // fx:id="modelNumberTextField"
+    private TextField modelNumberTextField; // Value injected by FXMLLoader
+
     @FXML // fx:id="scheduleNumberTextField"
     private TextField scheduleNumberTextField; // Value injected by FXMLLoader
+
+    @FXML // fx:id="orderNumberChoiceBox"
+    private ChoiceBox<String> orderNumberChoiceBox; // Value injected by FXMLLoader
+
+    @FXML // fx:id="osTextField"
+    private TextField osTextField; // Value injected by FXMLLoader
 
     @FXML // fx:id="operatorTextField"
     private TextField operatorTextField; // Value injected by FXMLLoader
 
-    @FXML // fx:id="orderNumberTextField"
-    private TextField orderNumberTextField; // Value injected by FXMLLoader
-
-    @FXML // fx:id="productIDTextField"
-    private TextField productIDTextField; // Value injected by FXMLLoader
-
-    @FXML // fx:id="osTextField"
-    private TextField osTextField; // Value injected by FXMLLoader
+    @FXML // fx:id="coaSerialTextField"
+    private TextField coaSerialTextField; // Value injected by FXMLLoader
 
     @FXML // fx:id="exitButton"
     private Button exitButton; // Value injected by FXMLLoader
@@ -102,6 +112,20 @@ public class AssignCOAViewController implements Initializable
         sessionFactory = _factory;
     }
 
+    @FXML
+    private void mouseDragged(MouseEvent event)
+    {
+        stage.setX(event.getScreenX() + xOffset);
+        stage.setY(event.getScreenY() + yOffset);
+    }
+
+    @FXML
+    private void mousePressed(MouseEvent event)
+    {
+        xOffset = stage.getX() - event.getScreenX();
+        yOffset = stage.getY() - event.getScreenY();
+    }
+
     /**
      * @param event Event to clear the text fields except the Operator field
      */
@@ -109,13 +133,21 @@ public class AssignCOAViewController implements Initializable
     void clearField(ActionEvent event) {
         Platform.runLater(() ->
         {
-            coaSerialTextField.setText("");
             serialNumberTextField.setText("");
-            scheduleNumberTextField.setText("");
-            orderNumberTextField.setText("");
-            osTextField.setText("");
-        });
+            productIDTextField.setText("");
+            Platform.runLater(() ->
+            {
+                osTextField.setText("");
+                coaSerialTextField.setText("");
+                serialNumberTextField.setText("");
+                scheduleNumberTextField.setText("");
+                orderNumberChoiceBox.setValue(null);
+                osTextField.setText("");
+                operatorTextField.setText("");
+                coaSerialTextField.setText("");
+            });
 
+        });
     }
 
     /**
@@ -130,68 +162,66 @@ public class AssignCOAViewController implements Initializable
      * @param event Event to send Information to the database
      */
     @FXML
-    @SuppressWarnings("Duplicates")
     void sendToDatabase(ActionEvent event)
     {
+        //--- Search for operator ---//
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        Query query = session.createQuery("from Operator WHERE operator = :op").setParameter("op", operatorTextField.getText());
-        List<Operator> operators = query.list();
-        Unit unit = new Unit();
-        unit.setProductID(productIDTextField.getText());
-        unit.setScheduleNumber(Integer.parseInt(scheduleNumberTextField.getText()));
-        unit.setSerialNumber(serialNumberTextField.getText());
-        if(operators.size() < 1 )
+        if(checkForOperator(session) && checkTextFieldsFormat(event))
         {
-            //--- Operator doesn't exist, tell Operator they need to create account --//
+            session.clear();
+            //--- Create unit from the information for the text fields ---//
+            Unit unit = new Unit();
+            unit.setSerialNumber(serialNumberTextField.getText());
+            unit.setProductID(productIDTextField.getText());
+            unit.setScheduleNumber(Integer.parseInt(scheduleNumberTextField.getText()));
+            Order selectedOrder = getOrderFromChoiceBoxSelection(session);
+            unit.setOrder(selectedOrder);
+
+            //--- Create the COA objet from the TextFields ---//
+            COA coa = new COA();
+            coa.setSerialNumber(coaSerialTextField.getText());
+            coa.setOperatingSystem(osTextField.getText());
+            coa.setOperatorID(operator);
+            coa.setUnit(unit);
+
+            //--- Once COA object created, set the COA for the unit object ---//
+            unit.setCoa(coa);
+
+            selectedOrder.addCOA(coa);
+            selectedOrder.addUnit(unit);
+
+            session.getTransaction().begin();
+            session.saveOrUpdate(coa);
+            session.saveOrUpdate(unit);
+            session.saveOrUpdate(selectedOrder);
+            session.getTransaction().commit();
             session.close();
-            new Alert(Alert.AlertType.ERROR, "Operator doesn't exist in the database.\nYou need to create an account before use", ButtonType.CLOSE).showAndWait();
         }
         else
         {
-            //--- Get the Operator Object then get the COAOrder object ----//
-            Operator operator = operators.get(0);
-            query = session.createQuery("from COAOrder WHERE orderNumber = :order").setParameter("order", Integer.parseInt(orderNumberTextField.getText()));
-            List<COAOrder> coaOrders = query.list();
-            if(coaOrders.size() < 1)
-            {
-                //--- Operator doesn't exist, tell Operator they need to create account --//
-                session.close();
-                new Alert(Alert.AlertType.ERROR, "Operator doesn't exist, create Operator before use", ButtonType.CLOSE).showAndWait();
-            }
-            else
-            {
-                //--- Get the order and add COA to it and reset view ---//
-                COAOrder order = coaOrders.get(0);
-                COA coa = new COA();
-                coa.setOperatingSystem(osTextField.getText());
-                coa.setSerialNumber(coaSerialTextField.getText());
-                coa.setOrder(order);
-                coa.setUnitSerialNumber(serialNumberTextField.getText());
-                coa.setUnit(unit);
-                coa.setOperatorID(operator);
-                coa.setProductID(productIDTextField.getText());
-                coa.setScheduleNumber(Integer.parseInt(scheduleNumberTextField.getText()));
-                operator.addCOA(coa);
-                order.addCOA(coa);
-                unit.setCoa(coa);
-                unit.setCoaOrder(order);
-                session.save(coa);
-                session.save(order);
-                session.save(operator);
-                session.save(unit);
-                session.getTransaction().commit();
-                session.close();
-                new Alert(Alert.AlertType.INFORMATION, MessageFormat.format("COA: {1}\nSerial number: {2}\nSchedule number: {3}", coaSerialTextField.getText(), serialNumberTextField.getText(), scheduleNumberTextField.getText()),ButtonType.CLOSE).showAndWait();
-                Platform.runLater(() ->
-                {
-                    osTextField.setText("");
-                    coaSerialTextField.setText("");
-                    serialNumberTextField.setText("");
-                    scheduleNumberTextField.setText("");
-                    orderNumberTextField.setText("");
-                });
-            }
+            displayErrorMessage("Operator doesn't exist, have your leadership create it for you", event);
+            session.close();
+        }
+
+
+    }
+
+    private Order getOrderFromChoiceBoxSelection(Session _session)
+    {
+        _session.getTransaction().begin();
+        Query query = _session.createQuery("from Order WHERE orderNumber = :orderNum").setParameter("orderNum", orderNumberChoiceBox.getValue());
+        List<Order> orders = query.list();
+        if(orders.size() > 0)
+        {
+            order = orders.get(0);
+            _session.clear();
+            return orders.get(0);
+        }
+        else
+        {
+            _session.clear();
+            return null;
         }
     }
 
@@ -199,20 +229,22 @@ public class AssignCOAViewController implements Initializable
     private void initialize()
     {
         assert gridP != null : "fx:id=\"gridP\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
-        assert coaSerialLabel != null : "fx:id=\"coaSerialLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
-        assert productIDLabel != null : "fx:id=\"productIDLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert serialNumberLabel != null : "fx:id=\"serialNumberLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert productIDLabel != null : "fx:id=\"productIDLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert modelNumberLabel != null : "fx:id=\"modelNumberLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert scheduleNumberLabel != null : "fx:id=\"scheduleNumberLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert orderNumberLabel != null : "fx:id=\"orderNumberLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
-        assert operatorLabel != null : "fx:id=\"operatorLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert osLabel != null : "fx:id=\"osLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
-        assert coaSerialTextField != null : "fx:id=\"coaSerialTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
-        assert productIDTextField != null : "fx:id=\"productIDTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert operatorLabel != null : "fx:id=\"operatorLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert coaSerialLabel != null : "fx:id=\"coaSerialLabel\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert serialNumberTextField != null : "fx:id=\"serialNumberTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert productIDTextField != null : "fx:id=\"productIDTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert modelNumberTextField != null : "fx:id=\"modelNumberTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert scheduleNumberTextField != null : "fx:id=\"scheduleNumberTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
-        assert orderNumberTextField != null : "fx:id=\"orderNumberTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
-        assert operatorTextField != null : "fx:id=\"operatorTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert orderNumberChoiceBox != null : "fx:id=\"orderNumberChoiceBox\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert osTextField != null : "fx:id=\"osTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert operatorTextField != null : "fx:id=\"operatorTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
+        assert coaSerialTextField != null : "fx:id=\"coaSerialTextField\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert clearButton != null : "fx:id=\"clearButton\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
         assert submitButton != null : "fx:id=\"submitButton\" was not injected: check your FXML file 'AssignCOAView.fxml'.";
@@ -229,6 +261,7 @@ public class AssignCOAViewController implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        loadChoiceBoxWithOrders();
         Functions.setToolTip(coaSerialLabel, "This is the serial number on the COA");
         Functions.setToolTip(serialNumberLabel, "This is the serial number located on the unit");
         Functions.setToolTip(scheduleNumberLabel, "This is the schedule number that corresponds to the serial number");
@@ -245,6 +278,76 @@ public class AssignCOAViewController implements Initializable
         Functions.scheduleNumberTextFieldTiedToButton(scheduleNumberTextField, submitButton);
         Functions.serialNumberTextFieldTiedToButton(serialNumberTextField, submitButton);
         submitButton.setDisable(true);
+    }
+
+    private void loadChoiceBoxWithOrders()
+    {
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        Query query = session.createQuery("from Order WHERE isFinished = false");
+        List<Order> orders = query.list();
+        if(orders.size() > 0) {
+            ObservableList<String> list = FXCollections.observableArrayList();
+            for (Order o : orders) {
+                list.add(String.valueOf(o.getOrderNumber()));
+            }
+            session.close();
+        }
+        else
+        {
+            new Alert(Alert.AlertType.ERROR, "No open Orders exists, tell your Leadership to create it",ButtonType.CLOSE).showAndWait();
+            session.close();
+            stage.close();
+        }
+    }
+
+    private boolean checkForOperator(Session _session)
+    {
+        Query query = _session.createQuery("from Operator WHERE operator = :op").setParameter("op", operatorTextField.getText());
+        List<Operator> operators = query.list();
+        if(operators.size() > 0)
+        {
+            operator = operators.get(0);
+            return true;
+        }
+        return false;
+    }
+
+    private void displayErrorMessage(String _message, ActionEvent _event)
+    {
+        new Alert(Alert.AlertType.ERROR, _message, ButtonType.CLOSE).showAndWait();
+        _event.consume();
+    }
+
+    private boolean checkTextFieldsFormat(ActionEvent _event)
+    {
+        if(serialNumberTextField.getText().matches("\\d{2}-\\d{8}") || serialNumberTextField.getText().matches("\\d{8}"))
+            if(productIDTextField.getText().matches("\\d{4}MC\\d{1,6}"))
+                if(modelNumberTextField.getText().matches("\\d{4}-\\d{4}-\\d{4}"))
+                    if(scheduleNumberTextField.getText().matches("\\d{7,8}"))
+                        if(orderNumberChoiceBox.getValue().equalsIgnoreCase(""))
+                            if (operatorTextField.getText().length() > 2)
+                                return coaSerialTextField.getText().length() > 6 || consumeEventWithMessage("The COA\'s Serial number is to short", _event);
+                            else
+                                return consumeEventWithMessage("Operator length is to short", _event);
+                        else
+                            return consumeEventWithMessage("Order number is not in the correct format", _event);
+                    else
+                        return consumeEventWithMessage("Schedule number is not in the correct format", _event);
+                else
+                    return consumeEventWithMessage("Model number is not in the correct format", _event);
+            else
+                return consumeEventWithMessage("Product ID is not in the correct format", _event);
+        else
+            return consumeEventWithMessage("Serial number isn't in the correct format", _event);
+
+
+    }
+
+    private boolean consumeEventWithMessage(String _message, ActionEvent _event)
+    {
+        displayErrorMessage(_message, _event);
+        return false;
     }
 
     void setStage(Stage stage)

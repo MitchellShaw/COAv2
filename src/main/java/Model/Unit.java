@@ -11,37 +11,41 @@ public class Unit
 {
     @Id
     @Column(unique = true)
-    private int scheduleNumber;
-
     private String serialNumber;
 
     private String productID;
-    @OneToOne
-    @JoinColumn(name = "LinkedCOA")
-    private COA coa;
+
+    private String modelNumber;
+
+    @Column(unique = true)
+    private int scheduleNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "orderNumber")
+    private Order order;
 
     @OneToOne
-    @JoinColumn(name = "orderNumber")
-    private COAOrder coaOrder;
+    @JoinColumn(name = "COA", unique = true)
+    private COA coa;
 
     /**
      * Getter for property 'coaOrder'.
      *
      * @return Value for property 'coaOrder'.
      */
-    public COAOrder getCoaOrder()
+    public Order getOrder()
     {
-        return coaOrder;
+        return order;
     }
 
     /**
      * Setter for property 'coaOrder'.
      *
-     * @param coaOrder Value to set for property 'coaOrder'.
+     * @param order Value to set for property 'coaOrder'.
      */
-    public void setCoaOrder(COAOrder coaOrder)
+    public void setOrder(Order order)
     {
-        this.coaOrder = coaOrder;
+        this.order = order;
     }
 
     /**
@@ -122,5 +126,39 @@ public class Unit
     public void setCoa(COA coa)
     {
         this.coa = coa;
+    }
+
+    /**
+     * Getter for property 'modelNumber'.
+     *
+     * @return Value for property 'modelNumber'.
+     */
+    public String getModelNumber()
+    {
+        return modelNumber;
+    }
+
+    /**
+     * Setter for property 'modelNumber'.
+     *
+     * @param modelNumber Value to set for property 'modelNumber'.
+     */
+    public void setModelNumber(String modelNumber)
+    {
+        this.modelNumber = modelNumber;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString()
+    {
+        return "Unit{" +
+                "serialNumber='" + serialNumber + '\'' +
+                ", productID='" + productID + '\'' +
+                ", modelNumber='" + modelNumber + '\'' +
+                ", scheduleNumber=" + scheduleNumber +
+                ", coa=" + coa +
+                ", order=" + order +
+                '}';
     }
 }

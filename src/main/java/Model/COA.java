@@ -13,62 +13,20 @@ public class COA
     @Id
     @Column(unique = true)
     private String serialNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COAOrder_Order")
-    private COAOrder coaOrder;
-    @Column(unique = true, name = "UnitSerial")
-    private String unitSerialNumber;
+    private Order order;
+
     @Column(name = "OS")
     private String operatingSystem;
+
     @ManyToOne
     @JoinColumn(name = "operatorID")
     private Operator operatorID;
+
     @OneToOne(mappedBy = "coa")
     private Unit unit;
-    private String productID;
-    @Column(unique = true)
-    private int scheduleNumber;
-
-    /**
-     * Setter for property 'coaOrder'.
-     *
-     * @param coaOrder Value to set for property 'coaOrder'.
-     */
-    public void setCoaOrder(COAOrder coaOrder)
-    {
-        this.coaOrder = coaOrder;
-    }
-
-    /**
-     * Getter for property 'productID'.
-     *
-     * @return Value for property 'productID'.
-     */
-    public String getProductID()
-    {
-        return productID;
-    }
-
-    /**
-     * Setter for property 'productID'.
-     *
-     * @param productID Value to set for property 'productID'.
-     */
-    public void setProductID(String productID)
-    {
-        this.productID = productID;
-    }
-
-    /**
-     * Getter for property 'coaOrder'.
-     *
-     * @return Value for property 'coaOrder'.
-     */
-    public COAOrder getCoaOrder()
-    {
-        return coaOrder;
-    }
-
 
     /**
      * Getter for property 'operatorID'.
@@ -156,9 +114,9 @@ public class COA
      *
      * @return Value for property 'coaOrder'.
      */
-    public COAOrder getOrder()
+    public Order getOrder()
     {
-        return coaOrder;
+        return order;
     }
 
     /**
@@ -166,54 +124,9 @@ public class COA
      *
      * @param coaOrder Value to set for property 'coaOrder'.
      */
-    public void setOrder(COAOrder coaOrder)
+    public void setOrder(Order coaOrder)
     {
-        this.coaOrder = coaOrder;
+        this.order = coaOrder;
     }
 
-    /**
-     * Getter for property 'unitSerialNumber'.
-     *
-     * @return Value for property 'unitSerialNumber'.
-     */
-    public String getUnitSerialNumber()
-    {
-        return unitSerialNumber;
-    }
-
-    /**
-     * Setter for property 'unitSerialNumber'.
-     *
-     * @param unitSerialNumber Value to set for property 'unitSerialNumber'.
-     */
-    public void setUnitSerialNumber(String unitSerialNumber)
-    {
-        this.unitSerialNumber = unitSerialNumber;
-    }
-
-    /**
-     * Getter for property 'scheduleNumber'.
-     *
-     * @return Value for property 'scheduleNumber'.
-     */
-    public int getScheduleNumber()
-    {
-        return scheduleNumber;
-    }
-
-    /**
-     * Setter for property 'scheduleNumber'.
-     *
-     * @param scheduleNumber Value to set for property 'scheduleNumber'.
-     */
-    public void setScheduleNumber(int scheduleNumber)
-    {
-        this.scheduleNumber = scheduleNumber;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "COA{" + "serialNumber='" + serialNumber + '\'' + ", coaOrder=" + coaOrder + ", unitSerialNumber='" + unitSerialNumber + '\'' + ", operatingSystem='" + operatingSystem + '\'' + ", operatorID=" + operatorID + ", unit=" + unit + ", productID='" + productID + '\'' + ", scheduleNumber=" + scheduleNumber + '}';
-    }
 }

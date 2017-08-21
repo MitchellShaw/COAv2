@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import Model.COA;
-import Model.COAOrder;
+import Model.Order;
 import Model.Functions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,17 +46,11 @@ public class CreateOrderViewController implements Initializable
     @FXML // fx:id="gridP"
     private GridPane gridP; // Value injected by FXMLLoader
 
-    @FXML // fx:id="classTextField1"
+    @FXML // fx:id="orderNumberTextField"
     private TextField orderNumberTextField; // Value injected by FXMLLoader
-
-    @FXML // fx:id="classTextField"
-    private TextField classTextField; // Value injected by FXMLLoader
 
     @FXML // fx:id="countUnitFields"
     private TextField countUnitFields; // Value injected by FXMLLoader
-
-    @FXML // fx:id="typeOfCoaField"
-    private TextField typeOfCoaField; // Value injected by FXMLLoader
 
     @FXML // fx:id="submitButton"
     private Button submitButton; // Value injected by FXMLLoader
@@ -67,6 +61,7 @@ public class CreateOrderViewController implements Initializable
     @FXML // fx:id="datePicker"
     private DatePicker datePicker; // Value injected by FXMLLoader
 
+
     /**
      * @param event Event object that will close the window
      */
@@ -76,16 +71,16 @@ public class CreateOrderViewController implements Initializable
     }
 
     /**
-     * @param event Event object that will send COAOrder to the database
+     * @param event Event object that will send Order to the database
      */
     @FXML
     private void sendDataToDatabase(ActionEvent event)
     {
-        COAOrder coaOrder = new COAOrder();
+        Order coaOrder = new Order();
         coaOrder.setOrderNumber(Integer.parseInt(orderNumberTextField.getText()));
-        coaOrder.setScheduleShipDate(datePicker.getValue());
+        coaOrder.setScheduledShipDate(datePicker.getValue());
         coaOrder.setCoaList(new ArrayList<COA>());
-        coaOrder.setNumberOfUnits(Integer.parseInt(countUnitFields.getText()));
+        coaOrder.setQuantity(Integer.parseInt(countUnitFields.getText()));
         coaOrder.setFinished(false);
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
@@ -116,9 +111,7 @@ public class CreateOrderViewController implements Initializable
     private void initialize() {
         assert gridP != null : "fx:id=\"gridP\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
         assert orderNumberTextField != null : "fx:id=\"classTextField1\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
-        assert classTextField != null : "fx:id=\"classTextField\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
         assert countUnitFields != null : "fx:id=\"countUnitFields\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
-        assert typeOfCoaField != null : "fx:id=\"typeOfCoaField\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
         assert submitButton != null : "fx:id=\"submitButton\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
         assert cancelButton != null : "fx:id=\"cancelButton\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
         assert datePicker != null : "fx:id=\"datePicker\" was not injected: check your FXML file 'CreateOrderView.fxml'.";
@@ -140,26 +133,6 @@ public class CreateOrderViewController implements Initializable
             else
             {
                 if(newValue.length() > 7)
-                    submitButton.setDisable(false);
-            }
-        });
-    }
-
-    /**
-     * @param _tf TextField object that needs to be in MC format to be accepted as input
-     */
-    private void setupMCTextField(TextField _tf)
-    {
-        _tf.textProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if(!newValue.matches("\\d{0,4}MC\\d{0,7}") && newValue.length() > 6)
-            {
-                _tf.setText(oldValue);
-                submitButton.setDisable(true);
-            }
-            else
-            {
-                if(newValue.length() > 6)
                     submitButton.setDisable(false);
             }
         });
@@ -196,7 +169,6 @@ public class CreateOrderViewController implements Initializable
         initialize();
         datePicker.setValue(LocalDate.now());
         setupOrderTextField(orderNumberTextField);
-        setupMCTextField(classTextField);
         setupNumberOfUnitsTextField(countUnitFields);
     }
 

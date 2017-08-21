@@ -1,7 +1,5 @@
 package Model;
 
-import org.hibernate.annotations.Columns;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,28 +11,37 @@ import java.util.List;
  * 8/17/2017
  */
 @Entity
-public class COAOrder
+@Table(name = "ERPOrder")
+public class Order
 {
     /**
      * Order number to uniquely identify the order
      */
     @Id
+    @Column(unique = true)
+
     private int orderNumber;
     /**
      * Variable to hold the scheduled ship date
      */
     @Column(name = "ssd")
-    private LocalDate scheduleShipDate;
+    private LocalDate scheduledShipDate;
+
     /**
      * List of COA's that belong to this order
      */
-    @OneToMany(mappedBy = "coaOrder")
+    @OneToMany(mappedBy = "order")
     private List<COA> coaList;
+
+
+    @OneToMany(mappedBy = "order")
+    private List<Unit> unitList;
+
     /**
      * A count of how many units belong to this order
      */
-    @Column(name = "count")
-    private int numberOfUnits;
+    @Column(name = "quantity")
+    private int quantity;
 
     @Column(name = "completed")
     private boolean isFinished;
@@ -84,9 +91,9 @@ public class COAOrder
      *
      * @return Value for property 'scheduleShipDate'.
      */
-    public LocalDate getScheduleShipDate()
+    public LocalDate getScheduledShipDate()
     {
-        return scheduleShipDate;
+        return scheduledShipDate;
     }
 
     /**
@@ -94,9 +101,9 @@ public class COAOrder
      *
      * @param scheduleShipDate Value to set for property 'scheduleShipDate'.
      */
-    public void setScheduleShipDate(LocalDate scheduleShipDate)
+    public void setScheduledShipDate(LocalDate scheduleShipDate)
     {
-        this.scheduleShipDate = scheduleShipDate;
+        this.scheduledShipDate = scheduleShipDate;
     }
 
     /**
@@ -115,13 +122,20 @@ public class COAOrder
      * @param _coa COA object to be added to the list
      * @return Returns true if successful, false if it's not
      */
-    public boolean addCOA(COA _coa)
+    public void addCOA(COA _coa)
     {
         if(coaList == null)
             coaList = new ArrayList<>();
         coaList.add(_coa);
-        return true;
     }
+
+    public void addUnit(Unit _unit)
+    {
+        if(unitList == null)
+            unitList = new ArrayList<>();
+        unitList.add(_unit);
+    }
+
 
     /**
      * Setter for property 'coaList'.
@@ -138,9 +152,9 @@ public class COAOrder
      *
      * @return Value for property 'numberOfUnits'.
      */
-    public int getNumberOfUnits()
+    public int getQuantity()
     {
-        return numberOfUnits;
+        return quantity;
     }
 
     /**
@@ -148,19 +162,19 @@ public class COAOrder
      *
      * @param numberOfUnits Value to set for property 'numberOfUnits'.
      */
-    public void setNumberOfUnits(int numberOfUnits)
+    public void setQuantity(int numberOfUnits)
     {
-        this.numberOfUnits = numberOfUnits;
+        this.quantity = numberOfUnits;
     }
 
     @Override
     public String toString()
     {
-        return "COAOrder{" +
+        return "Order{" +
                 "orderNumber=" + orderNumber +
-                ", scheduleShipDate=" + scheduleShipDate +
+                ", scheduleShipDate=" + scheduledShipDate +
                 ", coaList=" + coaList +
-                ", numberOfUnits=" + numberOfUnits +
+                ", numberOfUnits=" + quantity +
                 ", isFinished=" + isFinished +
                 '}';
     }
