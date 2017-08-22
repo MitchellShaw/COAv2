@@ -30,11 +30,11 @@ public class Order
     /**
      * List of COA's that belong to this order
      */
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<COA> coaList;
 
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<Unit> unitList;
 
     /**

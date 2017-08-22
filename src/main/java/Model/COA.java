@@ -15,7 +15,7 @@ public class COA
     private String serialNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COAOrder_Order")
+    @JoinColumn(name = "ERPOrder_Order")
     private Order order;
 
     @Column(name = "OS")

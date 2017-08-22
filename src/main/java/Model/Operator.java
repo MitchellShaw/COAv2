@@ -15,17 +15,19 @@ public class Operator
      * Variable to hold the RQSID of the operator
      */
     @Id
-    @Column(unique = true)
+    @Column(unique = true, length = 25)
     private String operator;
 
     /**
      * First name of the operator
      */
+    @Column(length = 35)
     private String firstName;
 
     /**
      * Last name of the operator
      */
+    @Column(length = 35)
     private String lastName;
     @OneToMany(mappedBy = "operatorID")
     private List<COA> coaList;

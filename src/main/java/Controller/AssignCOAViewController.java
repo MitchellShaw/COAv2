@@ -133,20 +133,14 @@ public class AssignCOAViewController implements Initializable
     void clearField(ActionEvent event) {
         Platform.runLater(() ->
         {
+            osTextField.setText("");
+            coaSerialTextField.setText("");
+            serialNumberTextField.setText("");
+            scheduleNumberTextField.setText("");
+            osTextField.setText("");
+            coaSerialTextField.setText("");
             serialNumberTextField.setText("");
             productIDTextField.setText("");
-            Platform.runLater(() ->
-            {
-                osTextField.setText("");
-                coaSerialTextField.setText("");
-                serialNumberTextField.setText("");
-                scheduleNumberTextField.setText("");
-                orderNumberChoiceBox.setValue(null);
-                osTextField.setText("");
-                operatorTextField.setText("");
-                coaSerialTextField.setText("");
-            });
-
         });
     }
 
@@ -177,6 +171,7 @@ public class AssignCOAViewController implements Initializable
             unit.setScheduleNumber(Integer.parseInt(scheduleNumberTextField.getText()));
             Order selectedOrder = getOrderFromChoiceBoxSelection(session);
             unit.setOrder(selectedOrder);
+            unit.setModelNumber(modelNumberTextField.getText());
 
             //--- Create the COA objet from the TextFields ---//
             COA coa = new COA();
@@ -184,6 +179,7 @@ public class AssignCOAViewController implements Initializable
             coa.setOperatingSystem(osTextField.getText());
             coa.setOperatorID(operator);
             coa.setUnit(unit);
+            coa.setOrder(selectedOrder);
 
             //--- Once COA object created, set the COA for the unit object ---//
             unit.setCoa(coa);
@@ -197,10 +193,15 @@ public class AssignCOAViewController implements Initializable
             session.saveOrUpdate(selectedOrder);
             session.getTransaction().commit();
             session.close();
+            Platform.runLater(() ->
+            {
+                new Alert(Alert.AlertType.INFORMATION, "Successfully assigned COA to unit", ButtonType.CLOSE).showAndWait();
+                stage.close();
+
+            });
         }
         else
         {
-            displayErrorMessage("Operator doesn't exist, have your leadership create it for you", event);
             session.close();
         }
 
@@ -210,7 +211,7 @@ public class AssignCOAViewController implements Initializable
     private Order getOrderFromChoiceBoxSelection(Session _session)
     {
         _session.getTransaction().begin();
-        Query query = _session.createQuery("from Order WHERE orderNumber = :orderNum").setParameter("orderNum", orderNumberChoiceBox.getValue());
+        Query query = _session.createQuery("from Order WHERE orderNumber = :orderNum").setParameter("orderNum", Integer.parseInt(orderNumberChoiceBox.getValue()));
         List<Order> orders = query.list();
         if(orders.size() > 0)
         {
@@ -292,6 +293,7 @@ public class AssignCOAViewController implements Initializable
                 list.add(String.valueOf(o.getOrderNumber()));
             }
             session.close();
+            orderNumberChoiceBox.setItems(list);
         }
         else
         {
@@ -325,7 +327,7 @@ public class AssignCOAViewController implements Initializable
             if(productIDTextField.getText().matches("\\d{4}MC\\d{1,6}"))
                 if(modelNumberTextField.getText().matches("\\d{4}-\\d{4}-\\d{4}"))
                     if(scheduleNumberTextField.getText().matches("\\d{7,8}"))
-                        if(orderNumberChoiceBox.getValue().equalsIgnoreCase(""))
+                        if(!orderNumberChoiceBox.getValue().equalsIgnoreCase(""))
                             if (operatorTextField.getText().length() > 2)
                                 return coaSerialTextField.getText().length() > 6 || consumeEventWithMessage("The COA\'s Serial number is to short", _event);
                             else

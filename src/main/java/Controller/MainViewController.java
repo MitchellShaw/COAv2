@@ -23,6 +23,7 @@ import org.hibernate.SessionFactory;
 public class MainViewController implements Initializable
 {
     private SessionFactory sessionFactory;
+
     public MainViewController(SessionFactory _factory)
     {
         sessionFactory = _factory;
@@ -49,6 +50,7 @@ public class MainViewController implements Initializable
     @FXML // fx:id="addOperatorButton"
     private Button addOperatorButton; // Value injected by FXMLLoader
 
+
     @FXML
     void assignCOAs(ActionEvent event) throws IOException
     {
@@ -57,11 +59,12 @@ public class MainViewController implements Initializable
         loader.setController(assignCOAViewController);
         GridPane pane = loader.load();
         Stage stage = new Stage(StageStyle.UNDECORATED);
+        assignCOAViewController.setStage(stage);
         stage.setResizable(false);
         stage.setTitle("Assign COA Form");
         stage.setScene(new Scene(pane));
         Functions.setUpIcons(stage);
-        assignCOAViewController.setStage(stage);
+
         stage.setOnCloseRequest(event1 -> stage.close());
         stage.showAndWait();
     }
@@ -85,12 +88,25 @@ public class MainViewController implements Initializable
         stage.setScene(new Scene(pane));
         Functions.setUpIcons(stage);
         createOrderViewController.setStage(stage);
-        stage.setOnCloseRequest(event1 -> System.exit(0));
+        stage.setOnCloseRequest(event1 -> stage.close());
         stage.showAndWait();
     }
 
     @FXML
-    void addOperator(ActionEvent event) {
+    void addOperator(ActionEvent event) throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AddOperatorView.fxml"));
+        AddOperatorView addOperatorView = new AddOperatorView(sessionFactory);
+        loader.setController(addOperatorView);
+        GridPane pane = loader.load();
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        addOperatorView.setStage(stage);
+        stage.setResizable(false);
+        stage.setTitle("Create New Operator");
+        stage.setScene(new Scene(pane));
+        Functions.setUpIcons(stage);
+        stage.setOnCloseRequest(event1 -> stage.close());
+        stage.showAndWait();
 
     }
 
@@ -102,7 +118,6 @@ public class MainViewController implements Initializable
         assert assignCOAsButton != null : "fx:id=\"assignCOAsButton\" was not injected: check your FXML file 'MainView.fxml'.";
         assert checkOrderStatusButton != null : "fx:id=\"checkOrderStatusButton\" was not injected: check your FXML file 'MainView.fxml'.";
         assert addOperatorButton != null : "fx:id=\"addOperatorButton\" was not injected: check your FXML file 'MainView.fxml'.";
-
     }
 
     /**
