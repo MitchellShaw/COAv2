@@ -28,7 +28,7 @@
                 <Font size="16.0" />
             </font>
         </Button>
-        <Button fx:id="checkOrderStatusButton" mnemonicParsing="false" onAction="#checkOrder" text="Check Order Status" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+        <Button fx:id="checkOrderStatusButton" mnemonicParsing="false" onAction="#checkOrders" text="Check Order Status" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
             <font>
                 <Font size="16.0" />
             </font>

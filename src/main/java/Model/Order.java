@@ -1,5 +1,7 @@
 package Model;
 
+import javafx.beans.property.SimpleStringProperty;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,8 +21,19 @@ public class Order
      */
     @Id
     @Column(unique = true)
-
     private int orderNumber;
+
+    @Transient
+    private SimpleStringProperty orderNumberProperty = new SimpleStringProperty();
+    @Transient
+    private SimpleStringProperty quantityProperty = new SimpleStringProperty();
+    @Transient
+    private SimpleStringProperty quantityRemainingProperty = new SimpleStringProperty();
+    @Transient
+    private SimpleStringProperty scheduleShipDateProperty = new SimpleStringProperty();
+    @Transient
+    private int completed = 0;
+
     /**
      * Variable to hold the scheduled ship date
      */
@@ -120,7 +133,6 @@ public class Order
 
     /**
      * @param _coa COA object to be added to the list
-     * @return Returns true if successful, false if it's not
      */
     public void addCOA(COA _coa)
     {
@@ -135,7 +147,6 @@ public class Order
             unitList = new ArrayList<>();
         unitList.add(_unit);
     }
-
 
     /**
      * Setter for property 'coaList'.
@@ -177,5 +188,75 @@ public class Order
                 ", numberOfUnits=" + quantity +
                 ", isFinished=" + isFinished +
                 '}';
+    }
+
+    public String getOrderNumberProperty()
+    {
+        return String.valueOf(orderNumber);
+    }
+
+    public SimpleStringProperty orderNumberPropertyProperty()
+    {
+        return orderNumberProperty;
+    }
+
+    public void setOrderNumberProperty(String orderNumberProperty)
+    {
+        this.orderNumberProperty.set(orderNumberProperty);
+    }
+
+    public String getQuantityProperty()
+    {
+        return String.valueOf(quantity);
+    }
+
+    public SimpleStringProperty quantityPropertyProperty()
+    {
+        return quantityProperty;
+    }
+
+    public void setQuantityProperty(String quantityProperty)
+    {
+        this.quantityProperty.set(quantityProperty);
+    }
+
+    public String getQuantityRemainingProperty()
+    {
+        return String.valueOf(quantity - completed);
+    }
+
+    public SimpleStringProperty quantityRemainingPropertyProperty()
+    {
+        return quantityRemainingProperty;
+    }
+
+    public void setQuantityRemainingProperty(String quantityRemainingProperty)
+    {
+        this.quantityRemainingProperty.set(quantityRemainingProperty);
+    }
+
+    public String getScheduleShipDateProperty()
+    {
+        return scheduledShipDate.toString();
+    }
+
+    public SimpleStringProperty scheduleShipDatePropertyProperty()
+    {
+        return scheduleShipDateProperty;
+    }
+
+    public void setScheduleShipDateProperty(String scheduleShipDateProperty)
+    {
+        this.scheduleShipDateProperty.set(scheduleShipDateProperty);
+    }
+
+    public int getCompleted()
+    {
+        return completed;
+    }
+
+    public void setCompleted(int completed)
+    {
+        this.completed = completed;
     }
 }

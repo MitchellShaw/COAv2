@@ -70,9 +70,19 @@ public class MainViewController implements Initializable
     }
 
     @FXML
-    void checkOrder(ActionEvent event)
+    void checkOrders(ActionEvent event) throws IOException
     {
-
+        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/OpenOrdersView.fxml"));
+        OpenOrderViewController openOrderViewController = new OpenOrderViewController(sessionFactory);
+        loader.setController(openOrderViewController);
+        Stage stage = new Stage();
+        stage.setTitle("Certificate of Authenticity Dashboard");
+        openOrderViewController.setStage(stage);
+        GridPane pane = loader.load();
+        stage.setScene(new Scene(pane));
+        Functions.setUpIcons(stage);
+        stage.setOnCloseRequest(event1 -> stage.close());
+        stage.showAndWait();
     }
 
     @FXML
