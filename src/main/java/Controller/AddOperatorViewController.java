@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.hibernate.Query;
@@ -24,13 +25,16 @@ import org.hibernate.SessionFactory;
  * @version 0.0.0.1
  * 8/21/2017
  */
-public class AddOperatorView implements Initializable
+public class AddOperatorViewController implements Initializable
 {
     private Stage stage;
 
     private SessionFactory sessionFactory;
 
-    public AddOperatorView(SessionFactory _factory)
+    private static double xOffset = 0;
+    private static double yOffset = 0;
+
+    AddOperatorViewController(SessionFactory _factory)
     {
         sessionFactory = _factory;
     }
@@ -117,6 +121,20 @@ public class AddOperatorView implements Initializable
     }
 
     @FXML
+    private void mouseDragged(MouseEvent event)
+    {
+        stage.setX(event.getScreenX() + xOffset);
+        stage.setY(event.getScreenY() + yOffset);
+    }
+
+    @FXML
+    private void mousePressed(MouseEvent event)
+    {
+        xOffset = stage.getX() - event.getScreenX();
+        yOffset = stage.getY() - event.getScreenY();
+    }
+
+    @FXML
         // This method is called by the FXMLLoader when initialization is complete
     void initialize()
     {
@@ -129,6 +147,11 @@ public class AddOperatorView implements Initializable
         assert lastNameTextField != null : "fx:id=\"lastNameTextField\" was not injected: check your FXML file 'AddOperatorView.fxml'.";
     }
 
+    /**
+     * Setter for property 'stage'.
+     *
+     * @param _stage Value to set for property 'stage'.
+     */
     public void setStage(Stage _stage)
     {
         stage = _stage;

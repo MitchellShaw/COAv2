@@ -178,6 +178,7 @@ public class Order
         this.quantity = numberOfUnits;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString()
     {
@@ -187,9 +188,15 @@ public class Order
                 ", coaList=" + coaList +
                 ", numberOfUnits=" + quantity +
                 ", isFinished=" + isFinished +
+                ", completed=" + completed +
                 '}';
     }
 
+    /**
+     * Getter for property 'orderNumberProperty'.
+     *
+     * @return Value for property 'orderNumberProperty'.
+     */
     public String getOrderNumberProperty()
     {
         return String.valueOf(orderNumber);
@@ -200,11 +207,21 @@ public class Order
         return orderNumberProperty;
     }
 
+    /**
+     * Setter for property 'orderNumberProperty'.
+     *
+     * @param orderNumberProperty Value to set for property 'orderNumberProperty'.
+     */
     public void setOrderNumberProperty(String orderNumberProperty)
     {
         this.orderNumberProperty.set(orderNumberProperty);
     }
 
+    /**
+     * Getter for property 'quantityProperty'.
+     *
+     * @return Value for property 'quantityProperty'.
+     */
     public String getQuantityProperty()
     {
         return String.valueOf(quantity);
@@ -215,11 +232,21 @@ public class Order
         return quantityProperty;
     }
 
+    /**
+     * Setter for property 'quantityProperty'.
+     *
+     * @param quantityProperty Value to set for property 'quantityProperty'.
+     */
     public void setQuantityProperty(String quantityProperty)
     {
         this.quantityProperty.set(quantityProperty);
     }
 
+    /**
+     * Getter for property 'quantityRemainingProperty'.
+     *
+     * @return Value for property 'quantityRemainingProperty'.
+     */
     public String getQuantityRemainingProperty()
     {
         return String.valueOf(quantity - completed);
@@ -230,11 +257,21 @@ public class Order
         return quantityRemainingProperty;
     }
 
+    /**
+     * Setter for property 'quantityRemainingProperty'.
+     *
+     * @param quantityRemainingProperty Value to set for property 'quantityRemainingProperty'.
+     */
     public void setQuantityRemainingProperty(String quantityRemainingProperty)
     {
         this.quantityRemainingProperty.set(quantityRemainingProperty);
     }
 
+    /**
+     * Getter for property 'scheduleShipDateProperty'.
+     *
+     * @return Value for property 'scheduleShipDateProperty'.
+     */
     public String getScheduleShipDateProperty()
     {
         return scheduledShipDate.toString();
@@ -245,16 +282,31 @@ public class Order
         return scheduleShipDateProperty;
     }
 
+    /**
+     * Setter for property 'scheduleShipDateProperty'.
+     *
+     * @param scheduleShipDateProperty Value to set for property 'scheduleShipDateProperty'.
+     */
     public void setScheduleShipDateProperty(String scheduleShipDateProperty)
     {
         this.scheduleShipDateProperty.set(scheduleShipDateProperty);
     }
 
+    /**
+     * Getter for property 'completed'.
+     *
+     * @return Value for property 'completed'.
+     */
     public int getCompleted()
     {
         return completed;
     }
 
+    /**
+     * Setter for property 'completed'.
+     *
+     * @param completed Value to set for property 'completed'.
+     */
     public void setCompleted(int completed)
     {
         this.completed = completed;

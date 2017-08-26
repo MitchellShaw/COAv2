@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.hibernate.SessionFactory;
@@ -23,6 +24,8 @@ import org.hibernate.SessionFactory;
 public class MainViewController implements Initializable
 {
     private SessionFactory sessionFactory;
+
+    private Stage mainStage;
 
     public MainViewController(SessionFactory _factory)
     {
@@ -63,10 +66,10 @@ public class MainViewController implements Initializable
         stage.setResizable(false);
         stage.setTitle("Assign COA Form");
         stage.setScene(new Scene(pane));
+        stage.initModality(Modality.APPLICATION_MODAL);
         Functions.setUpIcons(stage);
-
         stage.setOnCloseRequest(event1 -> stage.close());
-        stage.showAndWait();
+        stage.show();
     }
 
     @FXML
@@ -74,20 +77,22 @@ public class MainViewController implements Initializable
     {
         FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/OpenOrdersView.fxml"));
         OpenOrderViewController openOrderViewController = new OpenOrderViewController(sessionFactory);
-        loader.setController(openOrderViewController);
         Stage stage = new Stage();
+        openOrderViewController.setStage(stage);
+        loader.setController(openOrderViewController);
         stage.setTitle("Certificate of Authenticity Dashboard");
         openOrderViewController.setStage(stage);
         GridPane pane = loader.load();
         stage.setScene(new Scene(pane));
         Functions.setUpIcons(stage);
         stage.setOnCloseRequest(event1 -> stage.close());
-        stage.showAndWait();
+        stage.show();
     }
 
     @FXML
     void createOrder(ActionEvent event) throws IOException
     {
+
         FXMLLoader fxmlLoader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateOrderView.fxml"));
         CreateOrderViewController createOrderViewController = new CreateOrderViewController(sessionFactory);
         fxmlLoader.setController(createOrderViewController);
@@ -96,17 +101,18 @@ public class MainViewController implements Initializable
         stage.setResizable(false);
         stage.setTitle("Create Order");
         stage.setScene(new Scene(pane));
+        stage.initModality(Modality.APPLICATION_MODAL);
         Functions.setUpIcons(stage);
         createOrderViewController.setStage(stage);
         stage.setOnCloseRequest(event1 -> stage.close());
-        stage.showAndWait();
+        stage.show();
     }
 
     @FXML
     void addOperator(ActionEvent event) throws IOException
     {
         FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AddOperatorView.fxml"));
-        AddOperatorView addOperatorView = new AddOperatorView(sessionFactory);
+        AddOperatorViewController addOperatorView = new AddOperatorViewController(sessionFactory);
         loader.setController(addOperatorView);
         GridPane pane = loader.load();
         Stage stage = new Stage(StageStyle.UNDECORATED);
@@ -114,10 +120,13 @@ public class MainViewController implements Initializable
         stage.setResizable(false);
         stage.setTitle("Create New Operator");
         stage.setScene(new Scene(pane));
+        stage.initModality(Modality.APPLICATION_MODAL);
         Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 -> stage.close());
-        stage.showAndWait();
-
+        stage.setOnCloseRequest(event1 ->
+        {
+            stage.close();
+        });
+        stage.show();
     }
 
     @FXML
@@ -159,8 +168,18 @@ public class MainViewController implements Initializable
         for(int index = 0; index < split.length - 3; index++)
         {
             registrationViewPath.append(split[index]+"/");
-            System.out.printf("%s\n", split[index]);
+            //System.out.printf("%s\n", split[index]);
         }
         return registrationViewPath.toString();
+    }
+
+    /**
+     * Setter for property 'mainStage'.
+     *
+     * @param mainStage Value to set for property 'mainStage'.
+     */
+    public void setMainStage(Stage mainStage)
+    {
+        this.mainStage = mainStage;
     }
 }

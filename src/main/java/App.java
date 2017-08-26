@@ -52,6 +52,7 @@ public class App extends Application
         //System.out.printf("%s\n", getProductionPath());
         FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/MainView.fxml"));
         MainViewController mainViewController = new MainViewController(sessionFactory);
+        mainViewController.setMainStage(primaryStage);
         loader.setController(mainViewController);
         GridPane gridPane = new GridPane();
         gridPane = loader.load();

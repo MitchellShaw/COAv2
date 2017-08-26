@@ -84,12 +84,13 @@
 
 .table-view:row-selection:constrained-resize .column-header-background .nested-column-header
 {
-    -fx-font-size: 25px;
+    -fx-font-size: 35px;
+    -fx-font-style: italic;
 }
 
 .table-view:row-selection:constrained-resize .virtual-flow .clipped-container .sheet
 {
-    -fx-font-size: 20px;
+    -fx-font-size: 25px;
     -fx-text-alignment: center;
 }
 
