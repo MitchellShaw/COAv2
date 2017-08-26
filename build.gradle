@@ -15,9 +15,9 @@ buildscript
 apply plugin: 'java'
 
 repositories
-        {
-            mavenCentral()
-        }
+{
+    mavenCentral()
+}
 
 sourceCompatibility = 1.8
 
@@ -33,7 +33,7 @@ dependencies
             //compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
             // https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc
             compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.3.0.jre8-preview'
-
+            compile files('libs/undecoratorBis.jar')
         }
 
 jfx

@@ -22,13 +22,20 @@ import org.hibernate.SessionFactory;
 
 /**
  * @author Ramon Johnson
- * @version 0.0.0.1
+ * @version 1.0.0.0
  * 8/21/2017
  */
 public class AddOperatorViewController implements Initializable
 {
+    /**
+     * Stage object to be used for closing the window when the use for this View is done
+     */
     private Stage stage;
 
+    /**
+     * SessionFactory that is passed down to all classes of this Application so it can be used
+     * to run/create queries and make changes to the database by creating Session objects
+     */
     private SessionFactory sessionFactory;
 
     private static double xOffset = 0;

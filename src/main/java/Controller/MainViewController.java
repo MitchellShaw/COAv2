@@ -4,11 +4,11 @@ package Controller;
  */
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import Model.Functions;
+import insidefx.undecorator.UndecoratorScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -75,17 +75,25 @@ public class MainViewController implements Initializable
     @FXML
     void checkOrders(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/OpenOrdersView.fxml"));
-        OpenOrderViewController openOrderViewController = new OpenOrderViewController(sessionFactory);
+        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/DashboardView.fxml"));
+        DashboardViewController dashboardViewController = new DashboardViewController(sessionFactory);
         Stage stage = new Stage();
-        openOrderViewController.setStage(stage);
-        loader.setController(openOrderViewController);
+        dashboardViewController.setStage(stage);
+        loader.setController(dashboardViewController);
         stage.setTitle("Certificate of Authenticity Dashboard");
-        openOrderViewController.setStage(stage);
+        dashboardViewController.setStage(stage);
         GridPane pane = loader.load();
-        stage.setScene(new Scene(pane));
         Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 -> stage.close());
+        final UndecoratorScene undecoratorScene = new UndecoratorScene(stage, pane);
+        undecoratorScene.setFadeInTransition();
+        stage.setOnCloseRequest(event1 ->
+        {
+            event1.consume();
+            undecoratorScene.setFadeOutTransition();
+        });
+        stage.setScene(undecoratorScene);
+        stage.toFront();
+        this.mainStage.close();
         stage.show();
     }
 

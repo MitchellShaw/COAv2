@@ -1,10 +1,15 @@
 package Controller;
 
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import java.net.URL;
 import java.util.*;
 
+import Model.Functions;
 import Model.Order;
+import insidefx.undecorator.UndecoratorScene;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -13,10 +18,14 @@ import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import org.hibernate.Query;
@@ -28,7 +37,7 @@ import org.hibernate.SessionFactory;
  * @version 0.0.0.1
  * 8/25/2017
  */
-public class OpenOrderViewController implements Initializable
+public class DashboardViewController implements Initializable
 {
 
     /**
@@ -54,7 +63,7 @@ public class OpenOrderViewController implements Initializable
         stage = _stage;
     }
 
-    OpenOrderViewController(SessionFactory _factory)
+    DashboardViewController(SessionFactory _factory)
     {
         sessionFactory = _factory;
     }
@@ -130,26 +139,53 @@ public class OpenOrderViewController implements Initializable
         }
     }
 
+
+    @FXML
+    void editOrder(ActionEvent event) throws IOException
+    {
+        event.consume();
+        Order temp = table.getSelectionModel().getSelectedItem();
+        if(temp != null)
+        {
+            Stage editStage = new Stage(StageStyle.UNDECORATED);
+            editStage.initModality(Modality.APPLICATION_MODAL);
+            String testPath = String.format("%s\n", getClass().getResource("DashboardViewController.class"));
+            String[] path = testPath.split("classes");
+            FXMLLoader loader = new FXMLLoader(new URL(path[0] + "resources/FXML's/EditOrderView.fxml"));
+            EditOrderViewController editOrderViewController = new EditOrderViewController(sessionFactory, editStage, temp.getOrderNumber(), temp.getScheduledShipDate(), temp.getQuantity());
+            loader.setController(editOrderViewController);
+            GridPane gridPane = loader.load();
+            Functions.setUpIcons(editStage);
+            editStage.setOnCloseRequest(event1 -> editStage.close());
+            editStage.setOnCloseRequest(event1 ->
+            {
+                editStage.close();
+            });
+            editStage.setScene(new Scene(gridPane));
+            editStage.show();
+        }
+    }
+
     @FXML
     void exitView(ActionEvent event)
     {
-        stage.close();
+        System.exit(0);
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize()
     {
-        assert pane != null : "fx:id=\"pane\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert openOrder != null : "fx:id=\"openOrder\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert buttonBar != null : "fx:id=\"buttonBar\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert editButton != null : "fx:id=\"editButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert completeOrderButton != null : "fx:id=\"submitButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert orderNumberColumn != null : "fx:id=\"orderNumberColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert quantityColumn != null : "fx:id=\"quantityColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert quantityRemainingColumn != null : "fx:id=\"quantityRemainingColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert ssdColumn != null : "fx:id=\"ssdColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
+        assert pane != null : "fx:id=\"pane\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert openOrder != null : "fx:id=\"openOrder\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert buttonBar != null : "fx:id=\"buttonBar\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert editButton != null : "fx:id=\"editButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert completeOrderButton != null : "fx:id=\"submitButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert orderNumberColumn != null : "fx:id=\"orderNumberColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert quantityColumn != null : "fx:id=\"quantityColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert quantityRemainingColumn != null : "fx:id=\"quantityRemainingColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert ssdColumn != null : "fx:id=\"ssdColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
     }
 
     /**
@@ -485,8 +521,6 @@ public class OpenOrderViewController implements Initializable
             }
         }
 
-
-
         private Map<Integer, Order>orderMap(List<Order> _theList)
         {
             Map<Integer, Order> _temp = new TreeMap<>();
@@ -506,8 +540,5 @@ public class OpenOrderViewController implements Initializable
             }
             return _temp;
         }
-
-
-
     }
 }

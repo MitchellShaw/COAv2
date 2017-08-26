@@ -1,6 +1,7 @@
 package Controller;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -10,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -25,13 +27,21 @@ public class EditOrderViewController implements Initializable
 
     private int orderNumber;
 
-    public EditOrderViewController(SessionFactory sessionFactory, Stage stage, int orderNumber)
+    private LocalDate ssd;
+
+    private int quantity;
+
+    EditOrderViewController(SessionFactory sessionFactory, Stage stage, int orderNumber, LocalDate ssd, int quantity)
     {
         this.sessionFactory = sessionFactory;
         this.stage = stage;
         this.orderNumber = orderNumber;
-        orderNumberLabel.setText(String.format("Order No: %d", orderNumber));
+        this.ssd = ssd;
+        this.quantity = quantity;
     }
+
+    @FXML
+    private DatePicker datePicker;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -73,6 +83,7 @@ public class EditOrderViewController implements Initializable
         for(Order order: orderList)
         {
             order.setQuantity(Integer.parseInt(quantityTextField.getText()));
+            order.setScheduledShipDate(datePicker.getValue());
             session.save(order);
             session.getTransaction().commit();
         }
@@ -94,5 +105,9 @@ public class EditOrderViewController implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         Functions.numericTextFieldWithMinimum(quantityTextField, 1);
+        orderNumberLabel.setText(String.format("Order No: %d", orderNumber));
+        quantityTextField.setText(String.valueOf(quantity));
+        datePicker.setValue(ssd);
+
     }
 }
