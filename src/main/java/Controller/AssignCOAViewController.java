@@ -193,12 +193,8 @@ public class AssignCOAViewController implements Initializable
             session.saveOrUpdate(selectedOrder);
             session.getTransaction().commit();
             session.close();
-            Platform.runLater(() ->
-            {
-                new Alert(Alert.AlertType.INFORMATION, "Successfully assigned COA to unit", ButtonType.CLOSE).showAndWait();
-                stage.close();
-
-            });
+            new Alert(Alert.AlertType.INFORMATION, "Successfully assigned COA to unit", ButtonType.CLOSE).showAndWait();
+            stage.close();
         }
         else
         {

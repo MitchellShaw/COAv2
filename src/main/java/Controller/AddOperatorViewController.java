@@ -152,7 +152,7 @@ public class AddOperatorViewController implements Initializable
      *
      * @param _stage Value to set for property 'stage'.
      */
-    public void setStage(Stage _stage)
+    void setStage(Stage _stage)
     {
         stage = _stage;
     }

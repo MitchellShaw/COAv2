@@ -79,4 +79,17 @@ public class Functions
             }
         });
     }
+
+    public static void numericTextFieldWithMinimum(TextField _tx, int _min)
+    {
+        _tx.textProperty().addListener(((observable, oldValue, newValue) ->
+        {
+            if(newValue.length() >= _min)
+            {
+                if (!newValue.matches("\\d{1," + _min + "}")) {
+                    _tx.setText(newValue.replaceAll("\\D", ""));
+                }
+            }
+        }));
+    }
 }

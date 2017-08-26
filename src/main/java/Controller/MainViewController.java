@@ -159,7 +159,7 @@ public class MainViewController implements Initializable
      * @return Value for property 'productionPath'.
      */
     @SuppressWarnings("Duplicates")
-    String getProductionPath()
+    private String getProductionPath()
     {
         String className = this.getClass().getSimpleName();
         String testPath = String.valueOf(this.getClass().getResource(className+".class"));
