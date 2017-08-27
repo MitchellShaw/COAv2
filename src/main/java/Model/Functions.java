@@ -24,16 +24,28 @@ public class Functions
         _stage.getIcons().add(new Image("/Images/ncr.png"));
     }
 
+    /**
+     * @param _node Label object to be used to setup ToolTip
+     * @param _text The ToolTip message
+     */
     public static void setToolTip(Label _node, String _text)
     {
         _node.setTooltip(new Tooltip(_text));
     }
 
+    /**
+     * @param _node TextField object to be used to setup ToolTip
+     * @param _text The ToolTip message
+     */
     public static void setToolTip(TextField _node, String _text)
     {
         _node.setTooltip(new Tooltip(_text));
     }
 
+    /**
+     * @param _node Button object to be used to setup ToolTip
+     * @param _text The ToolTip message
+     */
     public static void setToolTip(Button _node, String _text)
     {
         _node.setTooltip(new Tooltip(_text));
@@ -41,6 +53,7 @@ public class Functions
 
     /**
      * @param _tf TextFieldObject that needs to be numeric with serial number standards digits
+     * @param _button The button that will be disabled or enabled based on the result on the listener
      */
     public static void serialNumberTextFieldTiedToButton(TextField _tf, Button _button)
     {
@@ -62,6 +75,7 @@ public class Functions
 
     /**
      * @param _tf TextFieldObject that needs to be numeric with serial number standards digits
+     * @param _button The button that will be disabled or enabled based on the result on the listener
      */
     public static void scheduleNumberTextFieldTiedToButton(TextField _tf, Button _button)
     {
@@ -80,6 +94,10 @@ public class Functions
         });
     }
 
+    /**
+     * @param _tx Textfield that will be forced to be numeric
+     * @param _min The minimum amount of characters required
+     */
     public static void numericTextFieldWithMinimum(TextField _tx, int _min)
     {
         _tx.textProperty().addListener(((observable, oldValue, newValue) ->

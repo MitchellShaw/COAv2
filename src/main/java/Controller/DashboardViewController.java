@@ -50,7 +50,9 @@ public class DashboardViewController implements Initializable
      */
     private Stage stage;
 
-    // ---https://stackoverflow.com/questions/18618653/binding-hashmap-with-tableview-javafx ---//
+    /**
+     * Observable Arraylist to hold the data to submit to the TableView
+     */
     private ObservableList<Order> data = FXCollections.observableArrayList();
 
     /**
@@ -108,6 +110,11 @@ public class DashboardViewController implements Initializable
     @FXML // fx:id="quantityRemainingColumn1"
     private TableColumn<Order, String> ssdColumn; // Value injected by FXMLLoader
 
+    /**
+     * @param event ActionEvent passed down through JavaFX
+     *              This method will check the quantity remaining, and if the number isn't 0 it will not set this
+     *              order to complete
+     */
     @FXML
     void completeOrder(ActionEvent event)
     {
@@ -140,6 +147,11 @@ public class DashboardViewController implements Initializable
     }
 
 
+    /**
+     * editOrder method allows a user to edit the quantity of units a order number needs
+     * @param event ActionEvent passed down through JavaFX
+     * @throws IOException If EditOrderView.fxml can't be found this exception would be thrown
+     */
     @FXML
     void editOrder(ActionEvent event) throws IOException
     {
@@ -166,6 +178,10 @@ public class DashboardViewController implements Initializable
         }
     }
 
+    /**
+     * exitView method exits out of the program entirely
+     * @param event ActionEvent passed down through JavaFX
+     */
     @FXML
     void exitView(ActionEvent event)
     {
@@ -212,6 +228,9 @@ public class DashboardViewController implements Initializable
         setCompletedService.start();
     }
 
+    /**
+     * Method sets all the of columns in the tableview
+     */
     private void setUpTableColumns()
     {
         orderNumberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Order, String>, ObservableValue<String>>()
@@ -248,38 +267,12 @@ public class DashboardViewController implements Initializable
                 return new SimpleStringProperty(String.valueOf(param.getValue().getScheduledShipDate().toString()));
             }
         });
-
-
-        /*
-
-         Old way of doing things. It's best if Map is used as observable
-        orderNumberColumn.setCellValueFactory(new PropertyValueFactory<OrderProperty, String>("orderNumber"));
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<OrderProperty, String>("quantity"));
-        quantityRemainingColumn.setCellValueFactory(new PropertyValueFactory<OrderProperty, String>("quantityRemaining"));
-        ssdColumn.setCellValueFactory(new PropertyValueFactory<OrderProperty, String>("scheduleShipDate"));
-        //--- Testing purposes, trying to see what the graph would look like ---//
-        /*OrderProperty one = new OrderProperty();
-        one.setOrderNumber(String.valueOf(12345678));
-        one.setQuantity("5");
-        one.setQuantityRemaining("3");
-        one.setScheduleShipDate("2017/08/25");
-
-        OrderProperty two = new OrderProperty();
-        two.setOrderNumber(String.valueOf(23456789));
-        two.setQuantity("10");
-        two.setQuantityRemaining("7");
-        two.setScheduleShipDate("2017/08/26");
-
-        OrderProperty three = new OrderProperty();
-        three.setOrderNumber(String.valueOf(47568456));
-        three.setQuantity("47");
-        three.setQuantityRemaining("25");
-        three.setScheduleShipDate("2017/08/29");
-        ObservableList<OrderProperty> orders = FXCollections.observableArrayList();
-        orders.addAll(one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three,one, two, three,one ,two ,three);
-        table.setItems(orders);*/
     }
 
+    /**
+     * SetCompletedService retrieves the count of COA's associated with an
+     * order and sets the completed number for the Order object
+     */
     private class SetCompletedService extends ScheduledService<Void>
     {
 
@@ -306,13 +299,11 @@ public class DashboardViewController implements Initializable
          *     }
          * </code></pre>
          * <p>
-         * <p>
          * If the Task is a pre-defined class (as opposed to being an
          * anonymous class), and if it followed the recommended best-practice,
          * then there is no need to save off state prior to constructing
          * the Task since its state is completely provided in its constructor.
          * </p>
-         * <p>
          * <pre><code>
          *     protected Task createTask() {
          *         // This is safe because getUrl is called on the FX Application
@@ -350,6 +341,10 @@ public class DashboardViewController implements Initializable
         }
     }
 
+    /**
+     * BackgroundService class continuously checks the database for any changes
+     * and makes the tableview refresh to display the data
+     */
     private class BackgroundService extends ScheduledService<Void>
     {
 
@@ -376,13 +371,11 @@ public class DashboardViewController implements Initializable
          *     }
          * </code></pre>
          * <p>
-         * <p>
          * If the Task is a pre-defined class (as opposed to being an
          * anonymous class), and if it followed the recommended best-practice,
          * then there is no need to save off state prior to constructing
          * the Task since its state is completely provided in its constructor.
          * </p>
-         * <p>
          * <pre><code>
          *     protected Task createTask() {
          *         // This is safe because getUrl is called on the FX Application
@@ -422,25 +415,6 @@ public class DashboardViewController implements Initializable
                 }
             };
         }
-
-        /* This is how we add stuff to the data
-        Map<Integer, Order> testing = new TreeMap<>();
-        Order one = new Order();
-        one.setOrderNumber(1234567);
-        one.setFinished(false);
-        one.setQuantity(5);
-        one.setScheduledShipDate(LocalDate.now());
-        Order two = new Order();
-        two.setOrderNumber(2345678);
-        two.setFinished(false);
-        two.setQuantity(47);
-        two.setScheduledShipDate(LocalDate.now());
-
-        testing.put(1234567, one);
-        testing.put(2345678, two);
-
-        data = FXCollections.observableArrayList(testing.entrySet());
-        data.get(0).getValue().getOrderNumber();*/
 
         /**
          * @param _order List from the Query
@@ -521,6 +495,10 @@ public class DashboardViewController implements Initializable
             }
         }
 
+        /**
+         * @param _theList List from Query.list() method
+         * @return Returns TreeMap object
+         */
         private Map<Integer, Order>orderMap(List<Order> _theList)
         {
             Map<Integer, Order> _temp = new TreeMap<>();
@@ -531,6 +509,10 @@ public class DashboardViewController implements Initializable
             return _temp;
         }
 
+        /**
+         * @param _theList List from the variable data
+         * @return Returns TreeMap object
+         */
         private Map<Integer, Order>orderMap(ObservableList<Order> _theList)
         {
             Map<Integer, Order> _temp = new TreeMap<>();

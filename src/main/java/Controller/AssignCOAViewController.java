@@ -36,11 +36,24 @@ public class AssignCOAViewController implements Initializable
      */
     private SessionFactory sessionFactory;
 
+    /**
+     * Order Object to be used to set information in the view
+     */
     private Order order;
 
+    /**
+     * Operator object to be used to set the correction information in the database
+     */
     private Operator operator;
 
+    /**
+     * Offset location for X
+     */
     private static double xOffset = 0;
+
+    /**
+     * Offset location for Y
+     */
     private static double yOffset = 0;
 
 
@@ -197,13 +210,13 @@ public class AssignCOAViewController implements Initializable
             stage.close();
         }
         else
-        {
             session.close();
-        }
-
-
     }
 
+    /**
+     * @param _session Session object to be used to run queries
+     * @return Returns Order object
+     */
     private Order getOrderFromChoiceBoxSelection(Session _session)
     {
         _session.getTransaction().begin();
@@ -277,6 +290,9 @@ public class AssignCOAViewController implements Initializable
         submitButton.setDisable(true);
     }
 
+    /**
+     * This method finds all of the orders and loads them up in the choicebox
+     */
     private void loadChoiceBoxWithOrders()
     {
         Session session = sessionFactory.openSession();
@@ -299,6 +315,10 @@ public class AssignCOAViewController implements Initializable
         }
     }
 
+    /**
+     * @param _session Session object used for Queries
+     * @return Returns true if the operator exist
+     */
     private boolean checkForOperator(Session _session)
     {
         Query query = _session.createQuery("from Operator WHERE operator = :op").setParameter("op", operatorTextField.getText());
@@ -311,12 +331,20 @@ public class AssignCOAViewController implements Initializable
         return false;
     }
 
+    /**
+     * @param _message String variable of the message to be displayed in the AlertBox
+     * @param _event Event to be used to consume the event if need be
+     */
     private void displayErrorMessage(String _message, ActionEvent _event)
     {
         new Alert(Alert.AlertType.ERROR, _message, ButtonType.CLOSE).showAndWait();
         _event.consume();
     }
 
+    /**
+     * @param _event ActionEvent to be used to consume the event if needed
+     * @return Returns true if all the formats of the text files are correct
+     */
     private boolean checkTextFieldsFormat(ActionEvent _event)
     {
         if(serialNumberTextField.getText().matches("\\d{2}-\\d{8}") || serialNumberTextField.getText().matches("\\d{8}"))
@@ -342,17 +370,32 @@ public class AssignCOAViewController implements Initializable
 
     }
 
+    /**
+     * @param _message Message to be sent to AlertBox.
+     * @param _event Event to be consumed when the node is found
+     * @return Returns true if the execution executed
+     */
     private boolean consumeEventWithMessage(String _message, ActionEvent _event)
     {
         displayErrorMessage(_message, _event);
         return false;
     }
 
+    /**
+     * Setter for property 'stage'.
+     *
+     * @param stage Value to set for property 'stage'.
+     */
     void setStage(Stage stage)
     {
         this.stage = stage;
     }
 
+    /**
+     * Setter for property 'sessionFactory'.
+     *
+     * @param sessionFactory Value to set for property 'sessionFactory'.
+     */
     public void setSessionFactory(SessionFactory sessionFactory)
     {
         this.sessionFactory = sessionFactory;

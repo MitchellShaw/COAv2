@@ -38,7 +38,14 @@ public class AddOperatorViewController implements Initializable
      */
     private SessionFactory sessionFactory;
 
+    /**
+     * Offset location for X
+     */
     private static double xOffset = 0;
+
+    /**
+     * Offset location for Y
+     */
     private static double yOffset = 0;
 
     AddOperatorViewController(SessionFactory _factory)
@@ -73,6 +80,10 @@ public class AddOperatorViewController implements Initializable
     @FXML // fx:id="lastNameTextField"
     private TextField lastNameTextField; // Value injected by FXMLLoader
 
+    /**
+     * @param event ActionEvent passed down through JavaFX
+     *              This method clears all of the fileds in this view
+     */
     @FXML
     void clearFields(ActionEvent event) {
         Platform.runLater(() ->
@@ -83,11 +94,19 @@ public class AddOperatorViewController implements Initializable
         });
     }
 
+    /**
+     * @param event ActionEvent passed down through JavaFX
+     *              This method closes the stage of this view
+     */
     @FXML
     void closeStage(ActionEvent event) {
         stage.close();
     }
 
+    /**
+     * @param event ActionEvent passed down through JavaFX
+     *              This method creates an user object in the database
+     */
     @FXML
     void createUserInDatabase(ActionEvent event) {
         //--- Check to make sure user doesn't exist in database ---//
@@ -109,6 +128,10 @@ public class AddOperatorViewController implements Initializable
             new Alert(Alert.AlertType.ERROR, String.format("User %s already exist in the database",rqsIDTextField.getText()), ButtonType.CLOSE).showAndWait();
     }
 
+    /**
+     * @param _text Username to search the database for
+     * @return Returns true if the username is found, false if it was not.
+     */
     private boolean checkUserExist(String _text)
     {
         Session session = sessionFactory.openSession();

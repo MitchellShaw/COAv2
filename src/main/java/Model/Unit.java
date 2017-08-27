@@ -9,21 +9,39 @@ import javax.persistence.*;
 @Entity
 public class Unit
 {
+    /**
+     * Serial number that is assigned to unit used to uniquely identify between units.
+     */
     @Id
     @Column(unique = true)
     private String serialNumber;
 
+    /**
+     * Product ID is the unit MC, example: 7761MC100
+     */
     private String productID;
 
+    /**
+     * 4x4x4 number used to describe the unit
+     */
     private String modelNumber;
 
+    /**
+     * Schedule number is used for ERP purposes, can be used to uniquely identify units.
+     */
     @Column(unique = true)
     private int scheduleNumber;
 
+    /**
+     * Order object the unit was assigned to
+     */
     @ManyToOne
     @JoinColumn(name = "orderNumber")
     private Order order;
 
+    /**
+     * The COA object that was attached to this unit
+     */
     @OneToOne
     @JoinColumn(name = "COA", unique = true)
     private COA coa;

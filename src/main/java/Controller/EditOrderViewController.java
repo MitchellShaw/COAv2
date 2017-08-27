@@ -21,16 +21,49 @@ import org.hibernate.SessionFactory;
 
 public class EditOrderViewController implements Initializable
 {
-    private SessionFactory sessionFactory;
-
+    /**
+     * Stage object to be used for closing the window when the use for this View is done
+     */
     private Stage stage;
 
+    /**
+     * SessionFactory that is passed down to all classes of this Application so it can be used
+     * to run/create queries and make changes to the database by creating Session objects
+     */
+    private SessionFactory sessionFactory;
+
+    /**
+     * Offset location for X
+     */
+    private static double xOffset = 0;
+
+    /**
+     * Offset location for Y
+     */
+    private static double yOffset = 0;
+
+    /**
+     * Order number needs to be saved so it can be set when this view is shown
+     */
     private int orderNumber;
 
+    /**
+     * Scheduled ship date needs to be saved so it can be set when this view is shown
+     */
     private LocalDate ssd;
 
+    /**
+     * The number of units needs to be saved so it can be set when this view is shown
+     */
     private int quantity;
 
+    /**
+     * @param sessionFactory SessionFactory to be used to create Session
+     * @param stage Stage object so the exit button can close this stage
+     * @param orderNumber Order number so it can be saved locally in this class
+     * @param ssd Schedule ship date so it can be saved locally in this class
+     * @param quantity Quantity so it can be saved locally in this class
+     */
     EditOrderViewController(SessionFactory sessionFactory, Stage stage, int orderNumber, LocalDate ssd, int quantity)
     {
         this.sessionFactory = sessionFactory;
@@ -43,10 +76,16 @@ public class EditOrderViewController implements Initializable
     @FXML
     private DatePicker datePicker;
 
-    @FXML // ResourceBundle that was given to the FXMLLoader
+    /**
+     * ResourceBundle that was given to the FXMLLoader
+     */
+    @FXML
     private ResourceBundle resources;
 
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
+    /**
+     * URL location of the FXML file that was given to the FXMLLoader
+     */
+    @FXML
     private URL location;
 
     @FXML // fx:id="orderNumberLabel"

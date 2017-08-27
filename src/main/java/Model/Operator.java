@@ -29,6 +29,10 @@ public class Operator
      */
     @Column(length = 35)
     private String lastName;
+
+    /**
+     * Will hold the list of COAs this operator has been assigned.
+     */
     @OneToMany(mappedBy = "operatorID")
     private List<COA> coaList;
 

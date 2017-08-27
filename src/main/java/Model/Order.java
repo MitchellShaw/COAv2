@@ -41,12 +41,15 @@ public class Order
     private LocalDate scheduledShipDate;
 
     /**
-     * List of COA's that belong to this order
+     * List of COA's that belong to the order
      */
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<COA> coaList;
 
 
+    /**
+     * List of Units that belongs to the order
+     */
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private List<Unit> unitList;
 
@@ -56,6 +59,9 @@ public class Order
     @Column(name = "quantity")
     private int quantity;
 
+    /**
+     * Boolean variable to be used to determine if the order is complete
+     */
     @Column(name = "completed")
     private boolean isFinished;
 
@@ -141,6 +147,9 @@ public class Order
         coaList.add(_coa);
     }
 
+    /**
+     * @param _unit Unit object to be added to the unitList variable
+     */
     public void addUnit(Unit _unit)
     {
         if(unitList == null)
@@ -202,6 +211,9 @@ public class Order
         return String.valueOf(orderNumber);
     }
 
+    /**
+     * @return Returns the SimpleStringProperty of orderNumberProperty
+     */
     public SimpleStringProperty orderNumberPropertyProperty()
     {
         return orderNumberProperty;
@@ -227,6 +239,9 @@ public class Order
         return String.valueOf(quantity);
     }
 
+    /**
+     * @return Returns SimpleStringProperty of quantityProperty
+     */
     public SimpleStringProperty quantityPropertyProperty()
     {
         return quantityProperty;
@@ -252,6 +267,9 @@ public class Order
         return String.valueOf(quantity - completed);
     }
 
+    /**
+     * @return Returns quantityRemainingPropertyProperty
+     */
     public SimpleStringProperty quantityRemainingPropertyProperty()
     {
         return quantityRemainingProperty;
@@ -277,6 +295,9 @@ public class Order
         return scheduledShipDate.toString();
     }
 
+    /**
+     * @return Returns the SimpleStringProperty of scheduleShipDateProperty
+     */
     public SimpleStringProperty scheduleShipDatePropertyProperty()
     {
         return scheduleShipDateProperty;
