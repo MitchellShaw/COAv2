@@ -56,6 +56,30 @@
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,1) , 5, 0.0 , 0 , 1 );
 }
 
+.choice-box
+{
+    -fx-background-color: #262626;
+}
+
+.choice-box .context-menu
+{
+    -fx-background-color: #262626;
+}
+
+.choice-box .open-button .arrow
+{
+    -fx-background-color:
+            linear-gradient(rgba(85,184,73,1), rgba(85,184,73,1)),
+            radial-gradient(center 50% -40%, radius 200%, rgba(85,184,73,1) 45%, rgba(85,184,73,1) 50%);
+}
+
+
+.text-field
+{
+    -fx-background-color: #262626;
+    -fx-alignment: CENTER;
+}
+
 .label
 {
     -fx-text-fill: white;

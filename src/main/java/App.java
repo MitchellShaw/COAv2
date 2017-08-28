@@ -48,7 +48,6 @@ public class App extends Application
     {
         primaryStage.setTitle("COA Tracker");
         setupHibernate();
-        //System.out.printf("%s\n", getProductionPath());
         FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/MainView.fxml"));
         MainViewController mainViewController = new MainViewController(sessionFactory);
         mainViewController.setMainStage(primaryStage);
