@@ -80,8 +80,7 @@ public class MainViewController implements Initializable
         Stage stage = new Stage();
         dashboardViewController.setStage(stage);
         loader.setController(dashboardViewController);
-        stage.setTitle("Certificate of Authenticity Dashboard");
-        dashboardViewController.setStage(stage);
+        stage.setTitle("Certificate of Authenticity Dashboard");        
         GridPane pane = loader.load();
         Functions.setUpIcons(stage);
         final UndecoratorScene undecoratorScene = new UndecoratorScene(stage, pane);
