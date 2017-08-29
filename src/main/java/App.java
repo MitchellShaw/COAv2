@@ -1,5 +1,7 @@
+import Controller.DashboardViewController;
 import Controller.MainViewController;
 import Model.*;
+import insidefx.undecorator.UndecoratorScene;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -46,18 +48,20 @@ public class App extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        primaryStage.setTitle("COA Tracker");
         setupHibernate();
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/MainView.fxml"));
-        MainViewController mainViewController = new MainViewController(sessionFactory);
-        mainViewController.setMainStage(primaryStage);
-        loader.setController(mainViewController);
-        GridPane gridPane = new GridPane();
-        gridPane = loader.load();
+        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/DashboardView.fxml"));
+        DashboardViewController dashboardViewController = new DashboardViewController(sessionFactory);
+        dashboardViewController.setStage(primaryStage);
+        loader.setController(dashboardViewController);
+        GridPane pane = loader.load();
         Functions.setUpIcons(primaryStage);
-        primaryStage.setScene(new Scene(gridPane));
-        primaryStage.setResizable(false);
-        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        final UndecoratorScene undecoratorScene = new UndecoratorScene(primaryStage, pane);
+        undecoratorScene.setFadeInTransition();
+        primaryStage.setOnCloseRequest(event1 ->
+            System.exit(0));
+
+        primaryStage.setScene(undecoratorScene);
+        primaryStage.toFront();
         primaryStage.show();
     }
 

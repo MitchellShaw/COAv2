@@ -1,7 +1,6 @@
 package Controller;
 
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -189,7 +188,7 @@ public class AssignCOAViewController implements Initializable
             //--- Create the COA objet from the TextFields ---//
             COA coa = new COA();
             coa.setSerialNumber(coaSerialTextField.getText());
-            coa.setOperatingSystem(osTextField.getText());
+            coa.setPartNumber(osTextField.getText());
             coa.setOperatorID(operator);
             coa.setUnit(unit);
             coa.setOrder(selectedOrder);

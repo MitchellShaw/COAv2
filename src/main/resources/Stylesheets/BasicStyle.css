@@ -12,11 +12,11 @@
 .button:hover
 {
     -fx-background-color:
-            linear-gradient(rgba(85,184,73,1), rgba(85,184,73,1)),
-            radial-gradient(center 50% -40%, radius 200%, rgba(85,184,73,1) 45%, rgba(85,184,73,1) 50%);
-    -fx-background-radius: 6, 5;
+            linear-gradient(rgb(184, 4, 4), rgba(85,184,73,1)),
+            radial-gradient(center 50% -40%, radius 200%, rgb(184, 18, 6) 45%, rgb(184, 14, 22) 50%);
+    -fx-background-radius: 2, 2;
     -fx-background-insets: 0, 1;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 1 , 1 , 1 );
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 2, 1 , 1 , 1 );
     -fx-text-fill: white;
 }
 
@@ -78,8 +78,13 @@
 {
     -fx-background-color: #262626;
     -fx-alignment: CENTER;
+    -fx-text-fill: #ffffff;
 }
 
+.text-field .text
+{
+    -fx-effect: dropshadow(gaussian, black, 1, 0.5, 1, 1);
+}
 .label
 {
     -fx-text-fill: white;

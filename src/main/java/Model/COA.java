@@ -1,6 +1,8 @@
 package Model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * @author Ramon Johnson
@@ -28,8 +30,7 @@ public class COA
     /**
      * Variable to hold what type of COA is being used
      */
-    @Column(name = "OS")
-    private String operatingSystem;
+    private String partNumber;
 
     /**
      * Operator object to be used to determine which operator received the COA
@@ -43,6 +44,11 @@ public class COA
      */
     @OneToOne(mappedBy = "coa")
     private Unit unit;
+
+    @Column(name = "Time_Created")
+    private LocalTime createTime;
+    @Column(name = "Date_Created")
+    private LocalDate createdDate;
 
     /**
      * Getter for property 'operatorID'.
@@ -89,9 +95,9 @@ public class COA
      *
      * @return Value for property 'operatingSystem'.
      */
-    public String getOperatingSystem()
+    public String getPartNumber()
     {
-        return operatingSystem;
+        return partNumber;
     }
 
     /**
@@ -99,9 +105,9 @@ public class COA
      *
      * @param operatingSystem Value to set for property 'operatingSystem'.
      */
-    public void setOperatingSystem(String operatingSystem)
+    public void setPartNumber(String operatingSystem)
     {
-        this.operatingSystem = operatingSystem;
+        this.partNumber = operatingSystem;
     }
 
     /**
@@ -145,4 +151,43 @@ public class COA
         this.order = coaOrder;
     }
 
+    /**
+     * Getter for property 'createTime'.
+     *
+     * @return Value for property 'createTime'.
+     */
+    public LocalTime getCreateTime()
+    {
+        return createTime;
+    }
+
+    /**
+     * Setter for property 'createTime'.
+     *
+     * @param createTime Value to set for property 'createTime'.
+     */
+    public void setCreateTime(LocalTime createTime)
+    {
+        this.createTime = createTime;
+    }
+
+    /**
+     * Getter for property 'createdDate'.
+     *
+     * @return Value for property 'createdDate'.
+     */
+    public LocalDate getCreatedDate()
+    {
+        return createdDate;
+    }
+
+    /**
+     * Setter for property 'createdDate'.
+     *
+     * @param createdDate Value to set for property 'createdDate'.
+     */
+    public void setCreatedDate(LocalDate createdDate)
+    {
+        this.createdDate = createdDate;
+    }
 }

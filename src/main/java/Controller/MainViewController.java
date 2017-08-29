@@ -57,19 +57,7 @@ public class MainViewController implements Initializable
     @FXML
     void assignCOAs(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AssignCOAView.fxml"));
-        AssignCOAViewController assignCOAViewController = new AssignCOAViewController(sessionFactory);
-        loader.setController(assignCOAViewController);
-        GridPane pane = loader.load();
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-        assignCOAViewController.setStage(stage);
-        stage.setResizable(false);
-        stage.setTitle("Assign COA Form");
-        stage.setScene(new Scene(pane));
-        stage.initModality(Modality.APPLICATION_MODAL);
-        Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 -> stage.close());
-        stage.show();
+
     }
 
     @FXML
@@ -87,8 +75,7 @@ public class MainViewController implements Initializable
         undecoratorScene.setFadeInTransition();
         stage.setOnCloseRequest(event1 ->
         {
-            event1.consume();
-            undecoratorScene.setFadeOutTransition();
+            System.exit(0);
         });
         stage.setScene(undecoratorScene);
         stage.toFront();
@@ -118,22 +105,7 @@ public class MainViewController implements Initializable
     @FXML
     void addOperator(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AddOperatorView.fxml"));
-        AddOperatorViewController addOperatorView = new AddOperatorViewController(sessionFactory);
-        loader.setController(addOperatorView);
-        GridPane pane = loader.load();
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-        addOperatorView.setStage(stage);
-        stage.setResizable(false);
-        stage.setTitle("Create New Operator");
-        stage.setScene(new Scene(pane));
-        stage.initModality(Modality.APPLICATION_MODAL);
-        Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 ->
-        {
-            stage.close();
-        });
-        stage.show();
+
     }
 
     @FXML
