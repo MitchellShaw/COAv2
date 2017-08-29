@@ -1,41 +1,51 @@
 package Controller;
 
+import java.io.File;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 import Model.COA;
 import Model.Operator;
 import Model.Order;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by Ramon Johnson
  * 2017-08-28
  * @version 0.0.0.1
  */
-public class CreateCOAToOrderViewController
+public class CreateCOAToOrderViewController implements Initializable
 {
     private SessionFactory sessionFactory;
 
     private Stage stage;
 
-    public CreateCOAToOrderViewController(SessionFactory _factory)
+    CreateCOAToOrderViewController(SessionFactory _factory)
     {
         sessionFactory = _factory;
     }
@@ -144,7 +154,7 @@ public class CreateCOAToOrderViewController
         Order order = null;
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        Query query = session.createQuery("FROM Order WHERE orderNumber = :ord").setParameter("ord", _orderNumber);
+        Query query = session.createQuery("FROM Order WHERE orderNumber = " + Integer.parseInt(_orderNumber));
         List<Order> orders = query.list();
         for(Order o: orders)
             order = o;
@@ -180,7 +190,7 @@ public class CreateCOAToOrderViewController
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize()
+    void initialize() throws Exception
     {
         assert orderNumberChoiceBox != null : "fx:id=\"orderNumberTextField\" was not injected: check your FXML file 'CreateCOAToOrderView.fxml'.";
         assert partNumberChoiceBox != null : "fx:id=\"partNumberChoiceBox\" was not injected: check your FXML file 'CreateCOAToOrderView.fxml'.";
@@ -192,35 +202,8 @@ public class CreateCOAToOrderViewController
         assert submitButton != null : "fx:id=\"submitButton\" was not injected: check your FXML file 'CreateCOAToOrderView.fxml'.";
         assert messageLabel != null : "fx:id=\"messageLabel\" was not injected: check your FXML file 'CreateCOAToOrderView.fxml'.";
 
-        GetCountFromOrder getCountFromOrder = new GetCountFromOrder();
-        getCountFromOrder.setPeriod(Duration.seconds(1));
-        getCountFromOrder.setRestartOnFailure(true);
 
-        GetOrders getOrders = new GetOrders();
-        ObservableList<String> orderItems = getOrders.createTask().getValue();
-        if(orderItems == null)
-        {
-            //--- Stop the program here and explain there are no orders to assign COA's too --//
-            new Alert(Alert.AlertType.ERROR, "There are no open orders in the system.\nHave someone create the order so you can use this form", ButtonType.CLOSE).showAndWait();
-            stage.close();
-        }
-        else
-            orderNumberChoiceBox.setItems(orderItems);
 
-        orderNumberChoiceBox.addEventFilter(ActionEvent.ACTION, event ->
-        {
-            if(orderNumberChoiceBox.getValue().length() < 1 || orderNumberChoiceBox.getValue() == null)
-                getCountFromOrder.cancel();
-            else
-                getCountFromOrder.start();
-        });
-
-        messageLabel.textProperty().bind(getCountFromOrder.lastValueProperty());
-
-        operatorTextField.textProperty().addListener((observable, oldValue, newValue) ->
-        {
-            operatorTextField.setText(newValue.toLowerCase());
-        });
     }
 
     public void setStage(Stage _stage)
@@ -241,6 +224,111 @@ public class CreateCOAToOrderViewController
         }
         session.close();
         return result;
+    }
+
+    /**
+     * Called to initialize a controller after its root element has been
+     * completely processed.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  <tt>null</tt> if the location is not known.
+     * @param resources The resources used to localize the root object, or <tt>null</tt> if
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources)
+    {
+        try
+        {
+            partNumberChoiceBox.setItems(new GetPartNumbers().call());
+        } catch(Exception e)
+        {
+            new Alert(Alert.AlertType.ERROR, e.getMessage(), ButtonType.CLOSE).showAndWait();
+        }
+
+        GetCountFromOrder getCountFromOrder = new GetCountFromOrder();
+        getCountFromOrder.setPeriod(Duration.seconds(1));
+        getCountFromOrder.setRestartOnFailure(true);
+
+        GetOrders getOrders = new GetOrders();
+        ObservableList<String> orderItems = null;
+        try
+        {
+            orderItems = new CheckForOrders().call();
+        } catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        } catch(ExecutionException e)
+        {
+            e.printStackTrace();
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        if(orderItems == null)
+        {
+            //--- Stop the program here and explain there are no orders to assign COA's too --//
+            new Alert(Alert.AlertType.ERROR, "There are no open orders in the system.\nHave someone create the order so you can use this form", ButtonType.CLOSE).showAndWait();
+            stage.close();
+        }
+        else
+            orderNumberChoiceBox.setItems(orderItems);
+
+        orderNumberChoiceBox.addEventFilter(ActionEvent.ACTION, event ->
+        {
+            if(orderNumberChoiceBox.getValue().length() < 1 || orderNumberChoiceBox.getValue() == null)
+                getCountFromOrder.cancel();
+            else
+            {
+                if(!getCountFromOrder.isRunning())
+                    getCountFromOrder.start();
+            }
+        });
+
+        messageLabel.textProperty().bind(getCountFromOrder.lastValueProperty());
+
+        operatorTextField.textProperty().addListener((observable, oldValue, newValue) ->
+        {
+            operatorTextField.setText(newValue.toLowerCase());
+        });
+    }
+
+    private class CheckForOrders extends Task<ObservableList<String>>
+    {
+
+        /**
+         * Invoked when the Task is executed, the call method must be overridden and
+         * implemented by subclasses. The call method actually performs the
+         * background thread logic. Only the updateProgress, updateMessage, updateValue and
+         * updateTitle methods of Task may be called from code within this method.
+         * Any other interaction with the Task from the background thread will result
+         * in runtime exceptions.
+         *
+         * @return The result of the background work, if any.
+         * @throws Exception an unhandled exception which occurred during the
+         *                   background operation
+         */
+        @Override
+        @SuppressWarnings("Duplicates")
+        protected ObservableList<String> call() throws Exception
+        {
+            Session session = sessionFactory.openSession();
+            session.getTransaction().begin();
+            Query query = session.createQuery("FROM Order");
+            List<Order> orderList = query.list();
+            ObservableList<String> orders = FXCollections.observableArrayList();
+            for(Order order : orderList)
+            {
+                orders.add(String.valueOf(order.getOrderNumber()));
+                System.out.println(MessageFormat.format("Order: {0}",order.getOrderNumber()));
+            }
+
+            session.close();
+            if(orders.size() > 0)
+                return orders;
+            else
+                return null;
+        }
     }
 
     private class GetCountFromOrder extends ScheduledService<String>
@@ -327,6 +415,47 @@ public class CreateCOAToOrderViewController
         }
     }
 
+    private class GetPartNumbers extends Task<ObservableList<String>>
+    {
+
+        /**
+         * Invoked when the Task is executed, the call method must be overridden and
+         * implemented by subclasses. The call method actually performs the
+         * background thread logic. Only the updateProgress, updateMessage, updateValue and
+         * updateTitle methods of Task may be called from code within this method.
+         * Any other interaction with the Task from the background thread will result
+         * in runtime exceptions.
+         *
+         * @return The result of the background work, if any.
+         * @throws Exception an unhandled exception which occurred during the
+         *                   background operation
+         */
+        @Override
+        protected ObservableList<String> call() throws Exception
+        {
+            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
+            if(!file.exists())
+            {
+                String path = DashboardViewController.getPathOfClass(CreateCOAToOrderViewController.class);
+                file = new File(path + "/resources/Files/Operating Systems.xml");
+            }
+            ObservableList<String> list = FXCollections.observableArrayList();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document document = db.parse(file);
+            NodeList nodeList = document.getElementsByTagName("model");
+            for (int x = 0, size = nodeList.getLength(); x < size; x++)
+            {
+                String partNumber = nodeList.item(x).getAttributes().getNamedItem("number").getNodeValue();
+                String description = nodeList.item(x).getAttributes().getNamedItem("description").getNodeValue();
+                System.out.printf(MessageFormat.format("Part number: {0} {1}\n", partNumber, description));
+                list.add(partNumber);
+            }
+
+            return list;
+        }
+    }
+
     private class GetOrders extends Service<ObservableList<String>>
     {
         /**
@@ -381,7 +510,10 @@ public class CreateCOAToOrderViewController
                     List<Order> orderList = query.list();
                     ObservableList<String> orders = FXCollections.observableArrayList();
                     for(Order order : orderList)
+                    {
                         orders.add(String.valueOf(order.getOrderNumber()));
+                        System.out.println(MessageFormat.format("Order: {0}",order.getOrderNumber()));
+                    }
 
                     session.close();
                     if(orders.size() > 0)

@@ -1,5 +1,4 @@
 import Controller.DashboardViewController;
-import Controller.MainViewController;
 import Model.*;
 import insidefx.undecorator.UndecoratorScene;
 import javafx.application.Application;

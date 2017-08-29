@@ -181,9 +181,35 @@ public class DashboardViewController implements Initializable
 
     }
 
-    @FXML
-    void createCOA(ActionEvent event) {
+    static String getPathOfClass(Class _class)
+    {
+        String className = _class.getSimpleName();
+        String testPath = String.valueOf(_class.getResource(className+".class"));
+        String[] split = testPath.split("/");
+        StringBuilder registrationViewPath = new StringBuilder("");
+        for(int index = 0; index < split.length - 3; index++)
+        {
+            registrationViewPath.append(split[index]+"/");
+            System.out.printf("%s\n", split[index]);
+        }
+        return registrationViewPath.toString();
+    }
 
+    @FXML
+    void createCOA(ActionEvent event) throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateCOAToOrderView.fxml"));
+        CreateCOAToOrderViewController createCOAToOrderViewController = new CreateCOAToOrderViewController(sessionFactory);
+        loader.setController(createCOAToOrderViewController);
+        Stage _stage = new Stage();
+        createCOAToOrderViewController.setStage(_stage);
+        GridPane pane = loader.load();
+        Functions.setUpIcons(_stage);
+        final UndecoratorScene undecoratorScene = new UndecoratorScene(_stage, pane);
+        _stage.setScene(undecoratorScene);
+        _stage.setResizable(false);
+        _stage.setOnCloseRequest(event1 -> _stage.close());
+        _stage.show();
     }
 
     /**
@@ -422,7 +448,7 @@ public class DashboardViewController implements Initializable
 
     /**
      * BackgroundService class continuously checks the database for any changes
-     * and makes the tableview refresh to display the data
+     * and makes the tableView refresh to display the data
      */
     private class BackgroundService extends ScheduledService<Void>
     {
