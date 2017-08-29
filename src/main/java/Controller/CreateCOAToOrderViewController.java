@@ -26,7 +26,8 @@ import org.hibernate.SessionFactory;
 
 /**
  * Created by Ramon Johnson
- * 2017-08-28.
+ * 2017-08-28
+ * @version 0.0.0.1
  */
 public class CreateCOAToOrderViewController
 {
@@ -101,6 +102,7 @@ public class CreateCOAToOrderViewController
         else
         {
             //--- Display message saying that these 2 can't be empty ---//
+            new Alert(Alert.AlertType.ERROR,"Either there isn't an order selected or part number selected or both. Please select a value for a both", ButtonType.CLOSE).showAndWait();
             event.consume();
         }
         //--- I know the part number exists because I prepared that information in a text file ---//
@@ -117,7 +119,11 @@ public class CreateCOAToOrderViewController
     private void addCOA()
     {
         Order order = getOrder(orderNumberChoiceBox.getValue());
+        assert order != null;
+
         Operator operator = getOperator(operatorTextField.getText());
+        assert operator != null;
+
         COA coa = new COA();
         coa.setOperatorID(operator);
         coa.setSerialNumber(coaTextField.getText());
@@ -131,18 +137,14 @@ public class CreateCOAToOrderViewController
         session.save(coa);
         session.getTransaction().commit();
         session.close();
-        //--- Check to see if we have any more COA's to assign ---//
-        //--- If we do, only reset COA serial---//
-        //--- If we don't, display a message saying so ---//
-        //--- Get the order quantity and do a count in the database of COA's with certain order number ---//
     }
 
     private Order getOrder(String _orderNumber)
     {
-        Order order = new Order();
+        Order order = null;
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
-        Query query = session.createQuery("FROM Order WHERE orderNumber = :order").setParameter("order", _orderNumber);
+        Query query = session.createQuery("FROM Order WHERE orderNumber = :ord").setParameter("ord", _orderNumber);
         List<Order> orders = query.list();
         for(Order o: orders)
             order = o;
@@ -152,7 +154,7 @@ public class CreateCOAToOrderViewController
 
     private Operator getOperator(String _operator)
     {
-        Operator operator = new Operator();
+        Operator operator = null;
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
         Query query = session.createQuery("FROM Operator WHERE operator = :op").setParameter("op", _operator);
@@ -295,8 +297,8 @@ public class CreateCOAToOrderViewController
                 {
                     if(isCancelled())
                     {
-                        updateMessage("Error retrieving information with selected order");
-                        updateValue("Error retrieving information with selected order");
+                        //updateMessage("Error retrieving information with selected order");
+                        //updateValue("Error retrieving information with selected order");
                         return "Error retrieving information with selected order";
                     }
                     else
@@ -316,7 +318,7 @@ public class CreateCOAToOrderViewController
 
                         session.close();
                         assert temp != null;
-                        updateValue(String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity()));
+                        //updateValue(String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity()));
                         //updateMessage(String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity()));
                         return String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity());
                     }
@@ -379,9 +381,8 @@ public class CreateCOAToOrderViewController
                     List<Order> orderList = query.list();
                     ObservableList<String> orders = FXCollections.observableArrayList();
                     for(Order order : orderList)
-                    {
                         orders.add(String.valueOf(order.getOrderNumber()));
-                    }
+
                     session.close();
                     if(orders.size() > 0)
                         return orders;
