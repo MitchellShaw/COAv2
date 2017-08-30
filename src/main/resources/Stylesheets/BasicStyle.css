@@ -59,6 +59,7 @@
 .choice-box
 {
     -fx-background-color: #262626;
+    -fx-font-size: 16px;
 }
 
 .choice-box .context-menu
