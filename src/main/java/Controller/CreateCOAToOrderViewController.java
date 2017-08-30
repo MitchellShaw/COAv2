@@ -1,6 +1,7 @@
 package Controller;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 
 import Model.COA;
@@ -44,6 +46,8 @@ public class CreateCOAToOrderViewController implements Initializable
     private SessionFactory sessionFactory;
 
     private Stage stage;
+
+    private TreeMap<String, String> partNumbers = new TreeMap<>();
 
     CreateCOAToOrderViewController(SessionFactory _factory)
     {
@@ -145,7 +149,14 @@ public class CreateCOAToOrderViewController implements Initializable
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
         session.save(coa);
-        session.getTransaction().commit();
+        try
+        {
+            session.getTransaction().commit();
+        }
+        catch(Exception e)
+        {
+            new Alert(Alert.AlertType.ERROR, e.getMessage() +"\nCheck serial number, it may have already been created", ButtonType.CLOSE).showAndWait();
+        }
         session.close();
     }
 
@@ -178,8 +189,8 @@ public class CreateCOAToOrderViewController implements Initializable
     @FXML
     void clearFields(ActionEvent event)
     {
-        orderNumberChoiceBox.setValue("");
-        partNumberChoiceBox.setValue("");
+        orderNumberChoiceBox.setValue(" ");
+        partNumberChoiceBox.setValue(" ");
         operatorTextField.setText("");
         coaTextField.setText("");
     }
@@ -201,12 +212,9 @@ public class CreateCOAToOrderViewController implements Initializable
         assert clearButton != null : "fx:id=\"clearButton\" was not injected: check your FXML file 'CreateCOAToOrderView.fxml'.";
         assert submitButton != null : "fx:id=\"submitButton\" was not injected: check your FXML file 'CreateCOAToOrderView.fxml'.";
         assert messageLabel != null : "fx:id=\"messageLabel\" was not injected: check your FXML file 'CreateCOAToOrderView.fxml'.";
-
-
-
     }
 
-    public void setStage(Stage _stage)
+    void setStage(Stage _stage)
     {
         stage = _stage;
     }
@@ -249,30 +257,14 @@ public class CreateCOAToOrderViewController implements Initializable
         getCountFromOrder.setPeriod(Duration.seconds(1));
         getCountFromOrder.setRestartOnFailure(true);
 
-        GetOrders getOrders = new GetOrders();
         ObservableList<String> orderItems = null;
         try
         {
             orderItems = new CheckForOrders().call();
-        } catch(InterruptedException e)
-        {
-            e.printStackTrace();
-        } catch(ExecutionException e)
-        {
-            e.printStackTrace();
         } catch(Exception e)
         {
             e.printStackTrace();
         }
-
-        if(orderItems == null)
-        {
-            //--- Stop the program here and explain there are no orders to assign COA's too --//
-            new Alert(Alert.AlertType.ERROR, "There are no open orders in the system.\nHave someone create the order so you can use this form", ButtonType.CLOSE).showAndWait();
-            stage.close();
-        }
-        else
-            orderNumberChoiceBox.setItems(orderItems);
 
         orderNumberChoiceBox.addEventFilter(ActionEvent.ACTION, event ->
         {
@@ -291,6 +283,15 @@ public class CreateCOAToOrderViewController implements Initializable
         {
             operatorTextField.setText(newValue.toLowerCase());
         });
+
+        if(orderItems == null)
+        {
+            //--- Stop the program here and explain there are no orders to assign COA's too --//
+            new Alert(Alert.AlertType.ERROR, "There are no open orders in the system.\nHave someone create the order so you can use this form", ButtonType.CLOSE).showAndWait();
+            stage.close();
+        }
+        else
+            orderNumberChoiceBox.setItems(orderItems);
     }
 
     private class CheckForOrders extends Task<ObservableList<String>>
@@ -314,15 +315,14 @@ public class CreateCOAToOrderViewController implements Initializable
         {
             Session session = sessionFactory.openSession();
             session.getTransaction().begin();
-            Query query = session.createQuery("FROM Order");
+            Query query = session.createQuery("FROM Order WHERE isFinished = false");
             List<Order> orderList = query.list();
             ObservableList<String> orders = FXCollections.observableArrayList();
             for(Order order : orderList)
             {
                 orders.add(String.valueOf(order.getOrderNumber()));
-                System.out.println(MessageFormat.format("Order: {0}",order.getOrderNumber()));
+                //--- System.out.println(MessageFormat.format("Order: {0}",order.getOrderNumber())); --/
             }
-
             session.close();
             if(orders.size() > 0)
                 return orders;
@@ -408,6 +408,10 @@ public class CreateCOAToOrderViewController implements Initializable
                         assert temp != null;
                         //updateValue(String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity()));
                         //updateMessage(String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity()));
+                        if(count.toString().equalsIgnoreCase(String.valueOf(temp.getQuantity())))
+                            submitButton.setDisable(true);
+                        else
+                            submitButton.setDisable(false);
                         return String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity());
                     }
                 }
@@ -437,91 +441,22 @@ public class CreateCOAToOrderViewController implements Initializable
             if(!file.exists())
             {
                 String path = DashboardViewController.getPathOfClass(CreateCOAToOrderViewController.class);
-                file = new File(path + "/resources/Files/Operating Systems.xml");
+                file = new File("C:\\Users\\rj185085\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating System.xml");
             }
             ObservableList<String> list = FXCollections.observableArrayList();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(file);
             NodeList nodeList = document.getElementsByTagName("model");
-            for (int x = 0, size = nodeList.getLength(); x < size; x++)
+            for(int x = 0, size = nodeList.getLength(); x < size; x++)
             {
                 String partNumber = nodeList.item(x).getAttributes().getNamedItem("number").getNodeValue();
                 String description = nodeList.item(x).getAttributes().getNamedItem("description").getNodeValue();
-                System.out.printf(MessageFormat.format("Part number: {0} {1}\n", partNumber, description));
+                //System.out.printf(MessageFormat.format("Part number: {0} {1}\n", partNumber, description));
                 list.add(partNumber);
+                partNumbers.put(partNumber, description);
             }
-
             return list;
-        }
-    }
-
-    private class GetOrders extends Service<ObservableList<String>>
-    {
-        /**
-         * Invoked after the Service is started on the JavaFX Application Thread.
-         * Implementations should save off any state into final variables prior to
-         * creating the Task, since accessing properties defined on the Service
-         * within the background thread code of the Task will result in exceptions.
-         * <p>
-         * For example:
-         * <pre><code>
-         *     protected Task createTask() {
-         *         final String url = myService.getUrl();
-         *         return new Task&lt;String&gt;() {
-         *             protected String call() {
-         *                 URL u = new URL("http://www.oracle.com");
-         *                 BufferedReader in = new BufferedReader(
-         *                         new InputStreamReader(u.openStream()));
-         *                 String result = in.readLine();
-         *                 in.close();
-         *                 return result;
-         *             }
-         *         }
-         *     }
-         * </code></pre>
-         * If the Task is a pre-defined class (as opposed to being an
-         * anonymous class), and if it followed the recommended best-practice,
-         * then there is no need to save off state prior to constructing
-         * the Task since its state is completely provided in its constructor.
-         * </p>
-         * <pre><code>
-         *     protected Task createTask() {
-         *         // This is safe because getUrl is called on the FX Application
-         *         // Thread and the FirstLineReaderTasks stores it as an
-         *         // immutable property
-         *         return new FirstLineReaderTask(myService.getUrl());
-         *     }
-         * </code></pre>
-         *
-         * @return the Task to execute
-         */
-        @Override
-        protected Task<ObservableList<String>> createTask()
-        {
-            return new Task<ObservableList<String>>()
-            {
-                @Override
-                protected ObservableList<String> call() throws Exception
-                {
-                    Session session = sessionFactory.openSession();
-                    session.getTransaction().begin();
-                    Query query = session.createQuery("FROM Order");
-                    List<Order> orderList = query.list();
-                    ObservableList<String> orders = FXCollections.observableArrayList();
-                    for(Order order : orderList)
-                    {
-                        orders.add(String.valueOf(order.getOrderNumber()));
-                        System.out.println(MessageFormat.format("Order: {0}",order.getOrderNumber()));
-                    }
-
-                    session.close();
-                    if(orders.size() > 0)
-                        return orders;
-                    else
-                        return null;
-                }
-            };
         }
     }
 }

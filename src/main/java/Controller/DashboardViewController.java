@@ -126,7 +126,9 @@ public class DashboardViewController implements Initializable
     @FXML
     void addOperator(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/AddOperatorView.fxml"));
+//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/AddOperatorView.fxml"));
+        System.out.printf("%s\n",getClass().getResource("/FXML's/AddOperatorView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AddOperatorView.fxml"));
         AddOperatorViewController addOperatorView = new AddOperatorViewController(sessionFactory);
         loader.setController(addOperatorView);
         GridPane pane = loader.load();
@@ -147,11 +149,14 @@ public class DashboardViewController implements Initializable
     @FXML
     void assignCOA(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AssignCOAView.fxml"));
+//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AssignCOAView.fxml"));
+        System.out.printf("%s\n",getClass().getResource("/FXML's/AssignCOAView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AssignCOAView.fxml"));
         AssignCOAViewController assignCOAViewController = new AssignCOAViewController(sessionFactory);
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        assignCOAViewController.setStage(stage);
         loader.setController(assignCOAViewController);
         GridPane pane = loader.load();
-        Stage stage = new Stage(StageStyle.UNDECORATED);
         assignCOAViewController.setStage(stage);
         stage.setResizable(false);
         stage.setTitle("Assign COA Form");
@@ -165,17 +170,19 @@ public class DashboardViewController implements Initializable
     @FXML
     void createOrder(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateOrderView.fxml"));
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateOrderView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/CreateOrderView.fxml"));
         CreateOrderViewController createOrderViewController = new CreateOrderViewController(sessionFactory);
         loader.setController(createOrderViewController);
         GridPane pane = loader.load();
-        Stage stage = new Stage(StageStyle.UNDECORATED);
+        createOrderViewController.setStage(stage);
         stage.setResizable(false);
         stage.setTitle("Create Order");
         stage.setScene(new Scene(pane));
         stage.initModality(Modality.APPLICATION_MODAL);
         Functions.setUpIcons(stage);
-        createOrderViewController.setStage(stage);
+
         stage.setOnCloseRequest(event1 -> stage.close());
         stage.show();
 
@@ -198,7 +205,8 @@ public class DashboardViewController implements Initializable
     @FXML
     void createCOA(ActionEvent event) throws IOException
     {
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateCOAToOrderView.fxml"));
+//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateCOAToOrderView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/CreateCOAToOrderView.fxml"));
         CreateCOAToOrderViewController createCOAToOrderViewController = new CreateCOAToOrderViewController(sessionFactory);
         loader.setController(createCOAToOrderViewController);
         Stage _stage = new Stage();
@@ -264,7 +272,8 @@ public class DashboardViewController implements Initializable
             editStage.initModality(Modality.APPLICATION_MODAL);
             String testPath = String.format("%s\n", getClass().getResource("DashboardViewController.class"));
             String[] path = testPath.split("classes");
-            FXMLLoader loader = new FXMLLoader(new URL(path[0] + "resources/FXML's/EditOrderView.fxml"));
+//            FXMLLoader loader = new FXMLLoader(new URL(path[0] + "resources/FXML's/EditOrderView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/EditOrderView.fxml"));
             EditOrderViewController editOrderViewController = new EditOrderViewController(sessionFactory, editStage, temp.getOrderNumber(), temp.getScheduledShipDate(), temp.getQuantity());
             loader.setController(editOrderViewController);
             GridPane gridPane = loader.load();

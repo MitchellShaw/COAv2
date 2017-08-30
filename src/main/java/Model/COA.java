@@ -50,6 +50,9 @@ public class COA
     @Column(name = "Date_Created")
     private LocalDate createdDate;
 
+    @Column(name = "isAssigned")
+    private boolean assigned;
+
     /**
      * Getter for property 'operatorID'.
      *
@@ -189,5 +192,15 @@ public class COA
     public void setCreatedDate(LocalDate createdDate)
     {
         this.createdDate = createdDate;
+    }
+
+    public boolean isAssigned()
+    {
+        return assigned;
+    }
+
+    public void setAssigned(boolean assigned)
+    {
+        this.assigned = assigned;
     }
 }

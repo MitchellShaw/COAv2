@@ -94,19 +94,11 @@
             <Insets right="5.0" />
          </GridPane.margin>
       </ChoiceBox>
-      <ChoiceBox fx:id="coaSerialChoiceBox"  GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <ChoiceBox fx:id="coaSerialChoiceBox" prefHeight="25.0" prefWidth="193.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets right="5.0" />
          </GridPane.margin>
       </ChoiceBox>
-      <TextField fx:id="productIDTextField" layoutX="223.0" layoutY="59.0" promptText="Product ID on ticket" GridPane.columnIndex="1" GridPane.rowIndex="4">
-         <font>
-            <Font size="16.0" />
-         </font>
-         <GridPane.margin>
-            <Insets right="5.0" />
-         </GridPane.margin>
-      </TextField>
       <TextField fx:id="serialNumberTextField" promptText="Serial on Unit" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets right="5.0" />
@@ -114,6 +106,14 @@
          <font>
             <Font size="16.0" />
          </font>
+      </TextField>
+      <TextField fx:id="productIDTextField" layoutX="223.0" layoutY="59.0" promptText="Product ID on ticket" GridPane.columnIndex="1" GridPane.rowIndex="4">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
       </TextField>
       <TextField fx:id="modelNumberTextField" layoutX="223.0" layoutY="178.0" promptText="Model # on Ticket" GridPane.columnIndex="1" GridPane.rowIndex="5">
          <font>

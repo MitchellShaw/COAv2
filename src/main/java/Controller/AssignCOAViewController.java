@@ -49,6 +49,8 @@ public class AssignCOAViewController implements Initializable
      */
     private Operator operator;
 
+    private COA coa;
+
     /**
      * Offset location for X
      */
@@ -181,30 +183,45 @@ public class AssignCOAViewController implements Initializable
             unit.setOrder(selectedOrder);
             unit.setModelNumber(modelNumberTextField.getText());
 
-            //--- Create the COA objet from the TextFields ---//
-            COA coa = new COA();
-            coa.setSerialNumber(coaSerialChoiceBox.getValue());
+            //--- Get the COA object from the ChoiceBox ---//
+            COA coa = getCOAFromSerialNumber(coaSerialChoiceBox.getValue());
             coa.setOperatorID(operator);
             coa.setUnit(unit);
-            coa.setOrder(selectedOrder);
+            coa.setAssigned(true);
 
             //--- Once COA object created, set the COA for the unit object ---//
             unit.setCoa(coa);
 
-            selectedOrder.addCOA(coa);
-            selectedOrder.addUnit(unit);
-
             session.getTransaction().begin();
-            session.saveOrUpdate(coa);
-            session.saveOrUpdate(unit);
-            session.saveOrUpdate(selectedOrder);
+            session.update(coa);
+            session.save(unit);
+            session.update(selectedOrder);
             session.getTransaction().commit();
             session.close();
             new Alert(Alert.AlertType.INFORMATION, "Successfully assigned COA to unit", ButtonType.CLOSE).showAndWait();
-            stage.close();
+            serialNumberTextField.setText("");
+            scheduleNumberTextField.setText("");
+            coaSerialChoiceBox.getItems().remove(coaSerialChoiceBox.getValue());
+
         }
         else
             session.close();
+    }
+
+    private COA getCOAFromSerialNumber(String value)
+    {
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        Query query = session.createQuery("FROM COA WHERE serialNumber = :serial");
+        query.setParameter("serial", value);
+        List<COA> coas = query.list();
+        COA temp = null;
+        for(COA coa : coas)
+        {
+            temp = coa;
+        }
+        session.close();
+        return temp;
     }
 
     /**
@@ -228,6 +245,7 @@ public class AssignCOAViewController implements Initializable
             return null;
         }
     }
+
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     private void initialize()
@@ -278,6 +296,21 @@ public class AssignCOAViewController implements Initializable
         Functions.scheduleNumberTextFieldTiedToButton(scheduleNumberTextField, submitButton);
         Functions.serialNumberTextFieldTiedToButton(serialNumberTextField, submitButton);
         submitButton.setDisable(true);
+        orderNumberChoiceBox.addEventFilter(ActionEvent.ACTION, event ->
+        {
+            ObservableList<String> temp = FXCollections.observableArrayList();
+
+            Session session = sessionFactory.openSession();
+            session.getTransaction().begin();
+            Query query = session.createQuery("FROM COA where order.orderNumber = :orderNum AND assigned = false").setParameter("orderNum", Integer.parseInt(orderNumberChoiceBox.getValue()));
+            List<COA> coas = query.list();
+            for(COA coa : coas)
+            {
+                temp.add(coa.getSerialNumber());
+            }
+            session.close();
+            coaSerialChoiceBox.setItems(temp);
+        });
 
         orderNumberChoiceBox.addEventFilter(ActionEvent.ACTION, event ->
         {
@@ -287,7 +320,7 @@ public class AssignCOAViewController implements Initializable
     }
 
     /**
-     * This method finds all of the orders and loads them up in the choicebox
+     * This method finds all of the orders and loads them up in the choiceBox
      */
     private void loadChoiceBoxWithOrders()
     {

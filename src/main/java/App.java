@@ -12,6 +12,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Ramon Johnson
@@ -48,7 +50,8 @@ public class App extends Application
     public void start(Stage primaryStage) throws Exception
     {
         setupHibernate();
-        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/DashboardView.fxml"));
+        //System.out.println(getClass().getResource("/FXML's/DashboardView.fxml").toExternalForm());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/DashboardView.fxml"));
         DashboardViewController dashboardViewController = new DashboardViewController(sessionFactory);
         dashboardViewController.setStage(primaryStage);
         loader.setController(dashboardViewController);
