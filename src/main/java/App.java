@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 /**
  * @author Ramon Johnson
- * @version 0.0.0.1
+ * @version 1.0.0.1
  * 8/17/2017
  */
 public class App extends Application
@@ -50,7 +50,6 @@ public class App extends Application
     public void start(Stage primaryStage) throws Exception
     {
         setupHibernate();
-        //System.out.println(getClass().getResource("/FXML's/DashboardView.fxml").toExternalForm());
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/DashboardView.fxml"));
         DashboardViewController dashboardViewController = new DashboardViewController(sessionFactory);
         dashboardViewController.setStage(primaryStage);
@@ -61,31 +60,11 @@ public class App extends Application
         undecoratorScene.setFadeInTransition();
         primaryStage.setOnCloseRequest(event1 ->
             System.exit(0));
-
         primaryStage.setScene(undecoratorScene);
         primaryStage.toFront();
         primaryStage.show();
     }
 
-    /**
-     * Getter for property 'productionPath'.
-     *
-     * @return Value for property 'productionPath'.
-     */
-    @SuppressWarnings("Duplicates")
-    private String getProductionPath()
-    {
-        String className = this.getClass().getSimpleName();
-        String testPath = String.valueOf(this.getClass().getResource(className+".class"));
-        String[] split = testPath.split("/");
-        StringBuilder registrationViewPath = new StringBuilder("");
-        for(int index = 0; index < split.length - 3; index++)
-        {
-            registrationViewPath.append(split[index]+"/");
-            System.out.printf("%s\n", split[index]);
-        }
-        return registrationViewPath.toString();
-    }
 
     /**
      * Sets up Hibernate framework

@@ -2,15 +2,16 @@ group 'corp.ncr.Midland.Engineering'
 version '1.0-SNAPSHOT'
 
 buildscript
-        {
-            dependencies
-                    {
-                        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
-                    }
-            repositories {
-                mavenCentral()
-            }
-        }
+{
+    dependencies
+    {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories
+    {
+        mavenCentral()
+    }
+}
 
 apply plugin: 'java'
 
@@ -21,10 +22,7 @@ repositories
 
 sourceCompatibility = 1.8
 
-
 apply plugin: 'javafx-gradle-plugin'
-
-
 
 dependencies
 {
@@ -43,7 +41,11 @@ jfx
     // minimal requirement for jfxNative-task
     vendor = 'NCR Midland Engineering'
     //--- Renames the jar file ---//
-    jfxMainAppJarName = 'COA.jar'
+    jfxMainAppJarName = 'COADashboard.jar'
+
+    nativeOutputDir = 'build/jfx/native'
+
+    appName = 'COA Tracker'
 
     addPackagerJar = true
 }

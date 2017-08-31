@@ -7,7 +7,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import Model.COA;
 import Model.Functions;
+import Model.Operator;
 import Model.Order;
 import insidefx.undecorator.UndecoratorScene;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,8 +37,8 @@ import org.hibernate.SessionFactory;
 
 /**
  * @author Ramon Johnson
- * @version 0.0.0.1
  * 8/25/2017
+ * @version 1.0.0.1
  */
 public class DashboardViewController implements Initializable
 {
@@ -52,7 +54,7 @@ public class DashboardViewController implements Initializable
     private Stage stage;
 
     /**
-     * Observable Arraylist to hold the data to submit to the TableView
+     * Observable ArrayList to hold the data to submit to the TableView
      */
     private ObservableList<Order> data = FXCollections.observableArrayList();
 
@@ -123,43 +125,34 @@ public class DashboardViewController implements Initializable
     @FXML // fx:id="quantityRemainingColumn1"
     private TableColumn<Order, String> ssdColumn; // Value injected by FXMLLoader
 
+
     @FXML
     void addOperator(ActionEvent event) throws IOException
     {
-//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/production/resources/FXML's/AddOperatorView.fxml"));
-        System.out.printf("%s\n",getClass().getResource("/FXML's/AddOperatorView.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AddOperatorView.fxml"));
         AddOperatorViewController addOperatorView = new AddOperatorViewController(sessionFactory);
         loader.setController(addOperatorView);
-        GridPane pane = loader.load();
         Stage stage = new Stage(StageStyle.UNDECORATED);
         addOperatorView.setStage(stage);
+        GridPane pane = loader.load();
         stage.setResizable(false);
-        stage.setTitle("Create New Operator");
         stage.setScene(new Scene(pane));
         stage.initModality(Modality.APPLICATION_MODAL);
         Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 ->
-        {
-            stage.close();
-        });
+        stage.setOnCloseRequest(event1 -> stage.close());
         stage.show();
     }
 
     @FXML
     void assignCOA(ActionEvent event) throws IOException
     {
-//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/AssignCOAView.fxml"));
-        System.out.printf("%s\n",getClass().getResource("/FXML's/AssignCOAView.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AssignCOAView.fxml"));
         AssignCOAViewController assignCOAViewController = new AssignCOAViewController(sessionFactory);
+        loader.setController(assignCOAViewController);
         Stage stage = new Stage(StageStyle.UNDECORATED);
         assignCOAViewController.setStage(stage);
-        loader.setController(assignCOAViewController);
         GridPane pane = loader.load();
-        assignCOAViewController.setStage(stage);
         stage.setResizable(false);
-        stage.setTitle("Assign COA Form");
         stage.setScene(new Scene(pane));
         stage.initModality(Modality.APPLICATION_MODAL);
         Functions.setUpIcons(stage);
@@ -170,52 +163,33 @@ public class DashboardViewController implements Initializable
     @FXML
     void createOrder(ActionEvent event) throws IOException
     {
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateOrderView.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/CreateOrderView.fxml"));
         CreateOrderViewController createOrderViewController = new CreateOrderViewController(sessionFactory);
         loader.setController(createOrderViewController);
-        GridPane pane = loader.load();
+        Stage stage = new Stage(StageStyle.UNDECORATED);
         createOrderViewController.setStage(stage);
+        GridPane pane = loader.load();
         stage.setResizable(false);
         stage.setTitle("Create Order");
         stage.setScene(new Scene(pane));
         stage.initModality(Modality.APPLICATION_MODAL);
         Functions.setUpIcons(stage);
-
         stage.setOnCloseRequest(event1 -> stage.close());
         stage.show();
-
-    }
-
-    static String getPathOfClass(Class _class)
-    {
-        String className = _class.getSimpleName();
-        String testPath = String.valueOf(_class.getResource(className+".class"));
-        String[] split = testPath.split("/");
-        StringBuilder registrationViewPath = new StringBuilder("");
-        for(int index = 0; index < split.length - 3; index++)
-        {
-            registrationViewPath.append(split[index]+"/");
-            System.out.printf("%s\n", split[index]);
-        }
-        return registrationViewPath.toString();
     }
 
     @FXML
     void createCOA(ActionEvent event) throws IOException
     {
-//        FXMLLoader loader = new FXMLLoader(new URL(getProductionPath() + "/resources/FXML's/CreateCOAToOrderView.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/CreateCOAToOrderView.fxml"));
         CreateCOAToOrderViewController createCOAToOrderViewController = new CreateCOAToOrderViewController(sessionFactory);
         loader.setController(createCOAToOrderViewController);
-        Stage _stage = new Stage();
+        Stage _stage = new Stage(StageStyle.UNDECORATED);
         createCOAToOrderViewController.setStage(_stage);
         GridPane pane = loader.load();
-        Functions.setUpIcons(_stage);
-        final UndecoratorScene undecoratorScene = new UndecoratorScene(_stage, pane);
-        _stage.setScene(undecoratorScene);
+        _stage.setScene(new Scene(pane));
         _stage.setResizable(false);
+        Functions.setUpIcons(_stage);
         _stage.setOnCloseRequest(event1 -> _stage.close());
         _stage.show();
     }
@@ -247,7 +221,7 @@ public class DashboardViewController implements Initializable
                     for(Order o : orders)
                     {
                         o.setFinished(true);
-                        session.save(o);
+                        session.update(o);
                         session.getTransaction().commit();
                     }
                     session.close();
@@ -268,21 +242,14 @@ public class DashboardViewController implements Initializable
         Order temp = table.getSelectionModel().getSelectedItem();
         if(temp != null)
         {
-            Stage editStage = new Stage(StageStyle.UNDECORATED);
-            editStage.initModality(Modality.APPLICATION_MODAL);
-            String testPath = String.format("%s\n", getClass().getResource("DashboardViewController.class"));
-            String[] path = testPath.split("classes");
-//            FXMLLoader loader = new FXMLLoader(new URL(path[0] + "resources/FXML's/EditOrderView.fxml"));
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/EditOrderView.fxml"));
+            Stage editStage = new Stage(StageStyle.UNDECORATED);
             EditOrderViewController editOrderViewController = new EditOrderViewController(sessionFactory, editStage, temp.getOrderNumber(), temp.getScheduledShipDate(), temp.getQuantity());
             loader.setController(editOrderViewController);
             GridPane gridPane = loader.load();
             Functions.setUpIcons(editStage);
+            editStage.initModality(Modality.APPLICATION_MODAL);
             editStage.setOnCloseRequest(event1 -> editStage.close());
-            editStage.setOnCloseRequest(event1 ->
-            {
-                editStage.close();
-            });
             editStage.setScene(new Scene(gridPane));
             editStage.show();
         }
@@ -390,45 +357,6 @@ public class DashboardViewController implements Initializable
     private class SetCompletedService extends ScheduledService<Void>
     {
 
-        /**
-         * Invoked after the Service is started on the JavaFX Application Thread.
-         * Implementations should save off any state into final variables prior to
-         * creating the Task, since accessing properties defined on the Service
-         * within the background thread code of the Task will result in exceptions.
-         * <p>
-         * For example:
-         * <pre><code>
-         *     protected Task createTask() {
-         *         final String url = myService.getUrl();
-         *         return new Task&lt;String&gt;() {
-         *             protected String call() {
-         *                 URL u = new URL("http://www.oracle.com");
-         *                 BufferedReader in = new BufferedReader(
-         *                         new InputStreamReader(u.openStream()));
-         *                 String result = in.readLine();
-         *                 in.close();
-         *                 return result;
-         *             }
-         *         }
-         *     }
-         * </code></pre>
-         * <p>
-         * If the Task is a pre-defined class (as opposed to being an
-         * anonymous class), and if it followed the recommended best-practice,
-         * then there is no need to save off state prior to constructing
-         * the Task since its state is completely provided in its constructor.
-         * </p>
-         * <pre><code>
-         *     protected Task createTask() {
-         *         // This is safe because getUrl is called on the FX Application
-         *         // Thread and the FirstLineReaderTasks stores it as an
-         *         // immutable property
-         *         return new FirstLineReaderTask(myService.getUrl());
-         *     }
-         * </code></pre>
-         *
-         * @return the Task to execute
-         */
         @Override
         protected Task<Void> createTask()
         {
@@ -437,18 +365,20 @@ public class DashboardViewController implements Initializable
                 @Override
                 protected Void call() throws Exception
                 {
-                    Session session = sessionFactory.openSession();
-                    session.getTransaction().begin();
                     if(data.size() > 0)
                     {
                         for(Order $order: data)
                         {
-                            int orderNumber = $order.getOrderNumber();
-                            Query query = session.createQuery("from COA WHERE order.orderNumber= :number").setParameter("number", orderNumber);
-                            $order.setCompleted(query.list().size());
+                            int count = 0;
+                            for(COA coa : $order.getCoaList())
+                            {
+                                if(coa.isAssigned())
+                                    count++;
+                            }
+
+                            $order.setCompleted(count);
                         }
                     }
-                    session.close();
                     return null;
                 }
             };
@@ -462,45 +392,6 @@ public class DashboardViewController implements Initializable
     private class BackgroundService extends ScheduledService<Void>
     {
 
-        /**
-         * Invoked after the Service is started on the JavaFX Application Thread.
-         * Implementations should save off any state into final variables prior to
-         * creating the Task, since accessing properties defined on the Service
-         * within the background thread code of the Task will result in exceptions.
-         * <p>
-         * For example:
-         * <pre><code>
-         *     protected Task createTask() {
-         *         final String url = myService.getUrl();
-         *         return new Task&lt;String&gt;() {
-         *             protected String call() {
-         *                 URL u = new URL("http://www.oracle.com");
-         *                 BufferedReader in = new BufferedReader(
-         *                         new InputStreamReader(u.openStream()));
-         *                 String result = in.readLine();
-         *                 in.close();
-         *                 return result;
-         *             }
-         *         }
-         *     }
-         * </code></pre>
-         * <p>
-         * If the Task is a pre-defined class (as opposed to being an
-         * anonymous class), and if it followed the recommended best-practice,
-         * then there is no need to save off state prior to constructing
-         * the Task since its state is completely provided in its constructor.
-         * </p>
-         * <pre><code>
-         *     protected Task createTask() {
-         *         // This is safe because getUrl is called on the FX Application
-         *         // Thread and the FirstLineReaderTasks stores it as an
-         *         // immutable property
-         *         return new FirstLineReaderTask(myService.getUrl());
-         *     }
-         * </code></pre>
-         *
-         * @return the Task to execute
-         */
         @Override
         protected Task<Void> createTask()
         {
@@ -548,13 +439,10 @@ public class DashboardViewController implements Initializable
                     Order data = $observableMap.get($order);
                     data.setQuantity(temp.getQuantity());
                     data.setScheduledShipDate(temp.getScheduledShipDate());
-                    //System.out.printf("********************************GREATER THAN**************************\n%s | %s\n",temp.toString(), data.toString() );
                 }
                 else
-                {
                     _orders.add($orderMap.get($order));
-                    //System.out.printf("********************************NEW********************************\n%s\n",$orderMap.get($order).toString() );
-                }
+
             }
         }
 
@@ -567,7 +455,7 @@ public class DashboardViewController implements Initializable
             //--- This method is activated when the list from the Query is less than the data saved ---//
             Map<Integer, Order> $orderMap = orderMap(_order);
             Map<Integer, Order> $observableMap = orderMap(_orders);
-            //--- We have to remove from observable List
+            //--- We have to remove from observable List --//
             for (Integer $order : $orderMap.keySet())
             {
                 if($observableMap.containsKey($order))
@@ -576,7 +464,6 @@ public class DashboardViewController implements Initializable
                     Order data = $observableMap.get($order);
                     data.setQuantity(temp.getQuantity());
                     data.setScheduledShipDate(temp.getScheduledShipDate());
-                    //System.out.printf("********************************LESSER THAN**************************\n%s | %s\n",temp.toString(), data.toString() );
                 }
             }
 
@@ -605,7 +492,7 @@ public class DashboardViewController implements Initializable
                 Order data = $observableMap.get($order);
                 data.setQuantity(temp.getQuantity());
                 data.setScheduledShipDate(temp.getScheduledShipDate());
-                //System.out.printf("********************************EQUAL********************************\n%s | %s\n",temp.toString(), data.toString() );
+                data.setCoaList(temp.getCoaList());
             }
         }
 
@@ -636,25 +523,5 @@ public class DashboardViewController implements Initializable
             }
             return _temp;
         }
-    }
-
-    /**
-     * Getter for property 'productionPath'.
-     *
-     * @return Value for property 'productionPath'.
-     */
-    @SuppressWarnings("Duplicates")
-    private String getProductionPath()
-    {
-        String className = this.getClass().getSimpleName();
-        String testPath = String.valueOf(this.getClass().getResource(className+".class"));
-        String[] split = testPath.split("/");
-        StringBuilder registrationViewPath = new StringBuilder("");
-        for(int index = 0; index < split.length - 3; index++)
-        {
-            registrationViewPath.append(split[index]+"/");
-            //System.out.printf("%s\n", split[index]);
-        }
-        return registrationViewPath.toString();
     }
 }

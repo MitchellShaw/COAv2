@@ -23,6 +23,11 @@ import javafx.stage.Stage;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+/**
+ * @author Ramon Johnson
+ * 2017/08/28
+ * @version 1.0.0.1
+ */
 public class CreateOrderViewController implements Initializable
 {
     /**

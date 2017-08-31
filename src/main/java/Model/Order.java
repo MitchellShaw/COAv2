@@ -147,6 +147,22 @@ public class Order
         coaList.add(_coa);
     }
 
+    public boolean removeCOA(COA _coa)
+    {
+        return coaList.remove(_coa);
+    }
+
+    public boolean updateCOA(COA _coa)
+    {
+        for (COA coa : getCoaList()) {
+            if(coa.getSerialNumber().equalsIgnoreCase(_coa.getSerialNumber())) {
+                coa = _coa;
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @param _unit Unit object to be added to the unitList variable
      */
@@ -156,6 +172,12 @@ public class Order
             unitList = new ArrayList<>();
         unitList.add(_unit);
     }
+
+    public boolean removeUnit(Unit _unit)
+    {
+        return unitList.remove(_unit);
+    }
+
 
     /**
      * Setter for property 'coaList'.

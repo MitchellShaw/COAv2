@@ -23,6 +23,7 @@ import org.hibernate.SessionFactory;
 /**
  * Created by Ramon Johnson
  * 2017-08-18.
+ * @version 1.0.0.1
  * AssignCOAViewController should allow the operator to select the order number and based on that order number,
  * fill the choice box full of serial numbers for the COAs based on the order number. This list should decrement everytime
  * the submit button is pressed.
@@ -189,7 +190,11 @@ public class AssignCOAViewController implements Initializable
             coa.setUnit(unit);
             coa.setAssigned(true);
 
-            //--- Once COA object created, set the COA for the unit object ---//
+            if (!selectedOrder.updateCOA(coa)) {
+                new Alert(Alert.AlertType.ERROR, "Could not update COA in order coa list", ButtonType.CLOSE).showAndWait();
+            }
+
+            //--- Once COA object retrieved, set the COA for the unit object ---//
             unit.setCoa(coa);
 
             session.getTransaction().begin();

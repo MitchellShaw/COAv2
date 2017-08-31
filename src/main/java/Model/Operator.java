@@ -6,7 +6,8 @@ import java.util.List;
 
 /**
  * Created by Ramon Johnson
- * 2017-08-18.
+ * 2017-08-18
+ * @version 1.0.0.1
  */
 @Entity
 public class Operator
@@ -33,7 +34,7 @@ public class Operator
     /**
      * Will hold the list of COAs this operator has been assigned.
      */
-    @OneToMany(mappedBy = "operatorID")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "operatorID")
     private List<COA> coaList;
 
     /**

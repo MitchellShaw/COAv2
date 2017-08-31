@@ -6,8 +6,8 @@ import java.time.LocalTime;
 
 /**
  * @author Ramon Johnson
- * @version 1.0.0.0
  * 8/17/2017
+ * @version 1.0.0.1
  */
 @Entity
 public class COA

@@ -37,9 +37,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
- * Created by Ramon Johnson
+ * @author Ramon Johnson
  * 2017-08-28
- * @version 0.0.0.1
+ * @version 1.0.0.1
  */
 public class CreateCOAToOrderViewController implements Initializable
 {
@@ -146,16 +146,22 @@ public class CreateCOAToOrderViewController implements Initializable
         coa.setCreateTime(LocalTime.now());
         coa.setCreatedDate(LocalDate.now());
 
+        //--- Add COA's to these objects list ---//
+        order.addCOA(coa);
+        operator.addCOA(coa);
+
         Session session = sessionFactory.openSession();
         session.getTransaction().begin();
         session.save(coa);
+        session.update(order);
+        session.update(operator);
         try
         {
             session.getTransaction().commit();
         }
         catch(Exception e)
         {
-            new Alert(Alert.AlertType.ERROR, e.getMessage() +"\nCheck serial number, it may have already been created", ButtonType.CLOSE).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Check serial number, it may have already been created\n" + e.getMessage() , ButtonType.CLOSE).showAndWait();
         }
         session.close();
     }
@@ -333,48 +339,6 @@ public class CreateCOAToOrderViewController implements Initializable
 
     private class GetCountFromOrder extends ScheduledService<String>
     {
-
-        /**
-         * Invoked after the Service is started on the JavaFX Application Thread.
-         * Implementations should save off any state into final variables prior to
-         * creating the Task, since accessing properties defined on the Service
-         * within the background thread code of the Task will result in exceptions.
-         * <p>
-         * For example:
-         * <pre><code>
-         *     protected Task createTask() {
-         *         final String url = myService.getUrl();
-         *         return new Task&lt;String&gt;() {
-         *             protected String call() {
-         *                 URL u = new URL("http://www.oracle.com");
-         *                 BufferedReader in = new BufferedReader(
-         *                         new InputStreamReader(u.openStream()));
-         *                 String result = in.readLine();
-         *                 in.close();
-         *                 return result;
-         *             }
-         *         }
-         *     }
-         * </code></pre>
-         * <p>
-         * <p>
-         * If the Task is a pre-defined class (as opposed to being an
-         * anonymous class), and if it followed the recommended best-practice,
-         * then there is no need to save off state prior to constructing
-         * the Task since its state is completely provided in its constructor.
-         * </p>
-         * <p>
-         * <pre><code>
-         *     protected Task createTask() {
-         *         // This is safe because getUrl is called on the FX Application
-         *         // Thread and the FirstLineReaderTasks stores it as an
-         *         // immutable property
-         *         return new FirstLineReaderTask(myService.getUrl());
-         *     }
-         * </code></pre>
-         *
-         * @return the Task to execute
-         */
         @Override
         protected Task<String> createTask()
         {
@@ -437,10 +401,11 @@ public class CreateCOAToOrderViewController implements Initializable
         @Override
         protected ObservableList<String> call() throws Exception
         {
-            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
+//            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
+            File file = new File("D:\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating System.xml");
             if(!file.exists())
             {
-                String path = DashboardViewController.getPathOfClass(CreateCOAToOrderViewController.class);
+                String path = getClass().getResource("/Files/Operating System.xml").getPath();
                 file = new File("C:\\Users\\rj185085\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating System.xml");
             }
             ObservableList<String> list = FXCollections.observableArrayList();
@@ -452,7 +417,6 @@ public class CreateCOAToOrderViewController implements Initializable
             {
                 String partNumber = nodeList.item(x).getAttributes().getNamedItem("number").getNodeValue();
                 String description = nodeList.item(x).getAttributes().getNamedItem("description").getNodeValue();
-                //System.out.printf(MessageFormat.format("Part number: {0} {1}\n", partNumber, description));
                 list.add(partNumber);
                 partNumbers.put(partNumber, description);
             }

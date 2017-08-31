@@ -19,6 +19,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+/**
+ * @author Ramon Johnson
+ * 2017/08/25
+ * @version 1.0.0.1
+ */
 public class EditOrderViewController implements Initializable
 {
     /**
@@ -73,6 +78,9 @@ public class EditOrderViewController implements Initializable
         this.quantity = quantity;
     }
 
+    /**
+     * Datepicker object used to change the SSD of the order
+     */
     @FXML
     private DatePicker datePicker;
 
