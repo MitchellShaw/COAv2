@@ -15,6 +15,12 @@ import java.util.concurrent.ExecutionException;
 import Model.COA;
 import Model.Operator;
 import Model.Order;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableBooleanValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -49,6 +55,8 @@ public class CreateCOAToOrderViewController implements Initializable
 
     private TreeMap<String, String> partNumbers = new TreeMap<>();
 
+    ObservableList<Operator> operatorObservableList = FXCollections.observableArrayList();
+
     CreateCOAToOrderViewController(SessionFactory _factory)
     {
         sessionFactory = _factory;
@@ -78,6 +86,9 @@ public class CreateCOAToOrderViewController implements Initializable
     @FXML // fx:id="coaTextField"
     private TextField coaTextField; // Value injected by FXMLLoader
 
+    @FXML // fx:id="quantity"
+    private TextField quantity; // Value injected by FXMLLoader
+
     @FXML // fx:id="exitButton"
     private Button exitButton; // Value injected by FXMLLoader
 
@@ -90,7 +101,16 @@ public class CreateCOAToOrderViewController implements Initializable
     /* For later use!!!
         cancelButton.disableProperty().bind(service.stateProperty().isNotEqualTo(RUNNING));
         resetButton.disableProperty().bind(Bindings.or(service.stateProperty().isEqualTo(RUNNING),service.stateProperty().isEqualTo(SCHEDULED)));
+        https://gist.github.com/james-d/9904574
      */
+
+    public void bindings()
+    {
+        operatorObservableList.add(getOperator(operatorTextField.getText()));
+        submitButton.disableProperty().bind(coaTextField.textProperty().isEmpty().or(partNumberChoiceBox.valueProperty().isNull()).or(operatorTextField.textProperty().isEmpty()).or(quantity.textProperty().isEmpty()));
+        BooleanBinding isOperator = Bindings.createBooleanBinding(this::isOperator, operatorObservableList);
+    }
+
 
     @FXML
     void addCoaToDatabase(ActionEvent event) {
@@ -251,6 +271,7 @@ public class CreateCOAToOrderViewController implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        this.location = location;
         try
         {
             partNumberChoiceBox.setItems(new GetPartNumbers().call());
@@ -401,13 +422,7 @@ public class CreateCOAToOrderViewController implements Initializable
         @Override
         protected ObservableList<String> call() throws Exception
         {
-//            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
-            File file = new File("D:\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating System.xml");
-            if(!file.exists())
-            {
-                String path = getClass().getResource("/Files/Operating System.xml").getPath();
-                file = new File("C:\\Users\\rj185085\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating System.xml");
-            }
+            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
             ObservableList<String> list = FXCollections.observableArrayList();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
