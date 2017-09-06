@@ -1,8 +1,11 @@
 package Model;
 
+import javafx.beans.property.SimpleStringProperty;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Iterator;
 
 /**
  * @author Ramon Johnson
@@ -23,7 +26,7 @@ public class COA
     /**
      * Order object that will be used to tell what order the COA was assigned to
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ERPOrder_Order")
     private Order order;
 
@@ -35,14 +38,14 @@ public class COA
     /**
      * Operator object to be used to determine which operator received the COA
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "operatorID")
     private Operator operatorID;
 
     /**
      * Unit object to be used to hold the information to tell us what specific product the COA was attached to
      */
-    @OneToOne(mappedBy = "coa")
+    @OneToOne(mappedBy = "coa", fetch = FetchType.EAGER)
     private Unit unit;
 
     @Column(name = "Time_Created")
@@ -203,4 +206,43 @@ public class COA
     {
         this.assigned = assigned;
     }
+
+    public COA getCOAFromOrderList(String _serialNumber)
+    {
+        COA temp = null;
+        for(Iterator<COA> iterator = order.getCoaList().iterator(); iterator.hasNext();)
+        {
+            COA _temp = iterator.next();
+            if (_temp.getSerialNumber().equalsIgnoreCase(_serialNumber)) {
+                temp = _temp;
+                break;
+            }
+        }
+        return temp;
+    }
+
+    public COA getCOAFromOperatorList(String _serialNumber)
+    {
+        COA temp = null;
+        for(Iterator<COA> iterator = operatorID.getCoaList().iterator(); iterator.hasNext();)
+        {
+            COA _temp = iterator.next();
+            if (_temp.getSerialNumber().equalsIgnoreCase(_serialNumber)) {
+                temp = _temp;
+                break;
+            }
+        }
+        return temp;
+    }
+
+
+    public String getAssignedProperty()
+    {
+        if(assigned)
+            return unit != null ? unit.getSerialNumber() : "Not Assigned";
+        else
+            return "Not Assigned";
+    }
+
+
 }

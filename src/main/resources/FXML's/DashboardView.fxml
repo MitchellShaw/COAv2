@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="pane" hgap="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="946.0" prefWidth="1392.0" stylesheets="@../Stylesheets/BasicStyle.css" vgap="1.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="pane" hgap="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" stylesheets="@../Stylesheets/BasicStyle.css" vgap="5.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -32,55 +32,13 @@
                         <Image url="@../Images/ncr.bmp" />
                     </image>
                 </ImageView>
-                <Label fx:id="openOrder" text="Certificate of Authenticity Dashboard">
+                <Label fx:id="openOrder" text="Order Dashboard">
                     <font>
-                        <Font size="70.0" />
+                        <Font size="46.0" />
                     </font>
                 </Label>
             </children>
         </HBox>
-        <ButtonBar fx:id="buttonBar" prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
-            <buttons>
-                <Button fx:id="addOperatorButton" layoutX="1252.0" layoutY="10.0" mnemonicParsing="false" onAction="#addOperator" text="Add Operator">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-                <Button fx:id="assignCOAButton" layoutX="836.0" layoutY="10.0" mnemonicParsing="false" onAction="#assignCOA" text="Assign COA">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-                <Button fx:id="createCOAButton" mnemonicParsing="false" onAction="#createCOA" text="Create COA">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-                <Button fx:id="createOrderButton" layoutX="530.0" layoutY="64.0" mnemonicParsing="false" onAction="#createOrder" text="Create Order">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-                <Button fx:id="completeOrderButton" layoutX="530.0" layoutY="64.0" mnemonicParsing="false" onAction="#completeOrder" text="Complete">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-                <Button fx:id="editOrderButton" layoutX="948.0" layoutY="10.0" mnemonicParsing="false" onAction="#editOrder" text="Edit Order">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-                <Button fx:id="exitButton" layoutX="1032.0" layoutY="10.0" mnemonicParsing="false" onAction="#exitView" text="Exit">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Button>
-            </buttons>
-            <GridPane.margin>
-                <Insets bottom="4.0" right="8.0" />
-            </GridPane.margin>
-        </ButtonBar>
         <TableView fx:id="table" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="orderNumberColumn" prefWidth="75.0" text="Order Number" />
@@ -92,5 +50,47 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
         </TableView>
+        <ButtonBar fx:id="buttonBar" prefHeight="40.0" prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+            <buttons>
+                <Button fx:id="exitButton" layoutX="1032.0" layoutY="10.0" mnemonicParsing="false" onAction="#exitView" text="Exit">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            <Button fx:id="coaButton" layoutX="358.0" layoutY="10.0" mnemonicParsing="false" onAction="#coaDashboard" text="COA">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="assignCOAButton" layoutX="527.0" layoutY="10.0" mnemonicParsing="false" onAction="#assignCOA" text="Assign COA">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+                <Button fx:id="editOrderButton" layoutX="948.0" layoutY="10.0" mnemonicParsing="false" onAction="#editOrder" text="Edit Order">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+                <Button fx:id="completeOrderButton" layoutX="530.0" layoutY="64.0" mnemonicParsing="false" onAction="#completeOrder" text="Complete Order">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+                <Button fx:id="createOrderButton" layoutX="530.0" layoutY="64.0" mnemonicParsing="false" onAction="#createOrder" text="Create Order">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+                <Button fx:id="addOperatorButton" layoutX="1252.0" layoutY="10.0" mnemonicParsing="false" onAction="#addOperator" text="Add Operator">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            </buttons>
+            <GridPane.margin>
+                <Insets bottom="4.0" right="8.0" />
+            </GridPane.margin>
+        </ButtonBar>
     </children>
 </GridPane>

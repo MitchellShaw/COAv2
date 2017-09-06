@@ -39,6 +39,7 @@ import org.hibernate.SessionFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import javax.transaction.NotSupportedException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -55,7 +56,7 @@ public class CreateCOAToOrderViewController implements Initializable
 
     private TreeMap<String, String> partNumbers = new TreeMap<>();
 
-    ObservableList<Operator> operatorObservableList = FXCollections.observableArrayList();
+    ObservableList<String> operatorObservableList = FXCollections.observableArrayList();
 
     CreateCOAToOrderViewController(SessionFactory _factory)
     {
@@ -104,14 +105,6 @@ public class CreateCOAToOrderViewController implements Initializable
         https://gist.github.com/james-d/9904574
      */
 
-    public void bindings()
-    {
-        operatorObservableList.add(getOperator(operatorTextField.getText()));
-        submitButton.disableProperty().bind(coaTextField.textProperty().isEmpty().or(partNumberChoiceBox.valueProperty().isNull()).or(operatorTextField.textProperty().isEmpty()).or(quantity.textProperty().isEmpty()));
-        BooleanBinding isOperator = Bindings.createBooleanBinding(this::isOperator, operatorObservableList);
-    }
-
-
     @FXML
     void addCoaToDatabase(ActionEvent event) {
         //--- I know the order exists because I pull the information before hand ---//
@@ -158,32 +151,42 @@ public class CreateCOAToOrderViewController implements Initializable
         Operator operator = getOperator(operatorTextField.getText());
         assert operator != null;
 
-        COA coa = new COA();
-        coa.setOperatorID(operator);
-        coa.setSerialNumber(coaTextField.getText());
-        coa.setPartNumber(partNumberChoiceBox.getValue());
-        coa.setOrder(order);
-        coa.setCreateTime(LocalTime.now());
-        coa.setCreatedDate(LocalDate.now());
+        int loop = Integer.parseInt(quantity.getText());
+        Session session = sessionFactory.openSession();
+
+        int serialNumber = Integer.parseInt(coaTextField.getText());
+        for(int index = 0; index < loop; index++)
+        {
+            session.getTransaction().begin();
+            COA coa = new COA();
+            coa.setOperatorID(operator);
+            coa.setSerialNumber(String.valueOf(serialNumber++));
+            coa.setPartNumber(partNumberChoiceBox.getValue());
+            coa.setOrder(order);
+            coa.setCreateTime(LocalTime.now());
+            coa.setCreatedDate(LocalDate.now());
+            order.addCOA(coa);
+            operator.addCOA(coa);
+
+            session.save(coa);
+            session.update(order);
+            session.update(operator);
+            try
+            {
+                session.getTransaction().commit();
+
+            }
+            catch(Exception e)
+            {
+                new Alert(Alert.AlertType.ERROR, "Check serial number, it may have already been created\n" + e.getMessage() , ButtonType.CLOSE).showAndWait();
+                session.close();
+            }
+            session.clear();
+        }
 
         //--- Add COA's to these objects list ---//
-        order.addCOA(coa);
-        operator.addCOA(coa);
 
-        Session session = sessionFactory.openSession();
-        session.getTransaction().begin();
-        session.save(coa);
-        session.update(order);
-        session.update(operator);
-        try
-        {
-            session.getTransaction().commit();
-        }
-        catch(Exception e)
-        {
-            new Alert(Alert.AlertType.ERROR, "Check serial number, it may have already been created\n" + e.getMessage() , ButtonType.CLOSE).showAndWait();
-        }
-        session.close();
+
     }
 
     private Order getOrder(String _orderNumber)
@@ -271,6 +274,15 @@ public class CreateCOAToOrderViewController implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        loadOperatorList();
+        bindings();
+
+        quantity.textProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue.matches("\\d{0,2}"))
+                quantity.setText(newValue.replaceAll("[^\\d{0,2}]",""));
+        });
+
         this.location = location;
         try
         {
@@ -311,14 +323,35 @@ public class CreateCOAToOrderViewController implements Initializable
             operatorTextField.setText(newValue.toLowerCase());
         });
 
+
         if(orderItems == null)
         {
             //--- Stop the program here and explain there are no orders to assign COA's too --//
             new Alert(Alert.AlertType.ERROR, "There are no open orders in the system.\nHave someone create the order so you can use this form", ButtonType.CLOSE).showAndWait();
+            assert stage != null;
             stage.close();
         }
         else
             orderNumberChoiceBox.setItems(orderItems);
+
+    }
+
+    private void bindings()
+    {
+        BooleanBinding isNull = quantity.textProperty().length().lessThan(1).or(coaTextField.textProperty().length().lessThan(7));
+        submitButton.disableProperty().bind(isNull);
+    }
+
+    private void loadOperatorList()
+    {
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        Query query = session.createQuery("From Operator ");
+        List<Operator> operators = query.list();
+        for(Operator operator : operators){
+            operatorObservableList.add(operator.getOperator());
+        }
+        session.close();
     }
 
     private class CheckForOrders extends Task<ObservableList<String>>
@@ -369,11 +402,7 @@ public class CreateCOAToOrderViewController implements Initializable
                 protected String call() throws Exception
                 {
                     if(isCancelled())
-                    {
-                        //updateMessage("Error retrieving information with selected order");
-                        //updateValue("Error retrieving information with selected order");
                         return "Error retrieving information with selected order";
-                    }
                     else
                     {
                         Session session = sessionFactory.openSession();
@@ -391,8 +420,6 @@ public class CreateCOAToOrderViewController implements Initializable
 
                         session.close();
                         assert temp != null;
-                        //updateValue(String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity()));
-                        //updateMessage(String.format("%s/%d COA's Assigned", count.toString(), temp.getQuantity()));
                         if(count.toString().equalsIgnoreCase(String.valueOf(temp.getQuantity())))
                             submitButton.setDisable(true);
                         else
@@ -422,7 +449,8 @@ public class CreateCOAToOrderViewController implements Initializable
         @Override
         protected ObservableList<String> call() throws Exception
         {
-            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
+//            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
+            File file = new File("D:\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating Systems.xml");
             ObservableList<String> list = FXCollections.observableArrayList();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();

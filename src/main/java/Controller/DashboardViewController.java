@@ -86,30 +86,6 @@ public class DashboardViewController implements Initializable
     @FXML // fx:id="openOrder"
     private Label openOrder; // Value injected by FXMLLoader
 
-    @FXML // fx:id="buttonBar"
-    private ButtonBar buttonBar; // Value injected by FXMLLoader
-
-    @FXML // fx:id="addOperatorButton"
-    private Button addOperatorButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="assignCOAButton"
-    private Button assignCOAButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="createCOAButton"
-    private Button createCOAButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="createOrderButton"
-    private Button createOrderButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="completeOrderButton"
-    private Button completeOrderButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="editOrderButton"
-    private Button editOrderButton; // Value injected by FXMLLoader
-
-    @FXML // fx:id="exitButton"
-    private Button exitButton; // Value injected by FXMLLoader
-
     @FXML // fx:id="table"
     private TableView<Order> table; // Value injected by FXMLLoader
 
@@ -122,77 +98,104 @@ public class DashboardViewController implements Initializable
     @FXML // fx:id="quantityRemainingColumn"
     private TableColumn<Order, String> quantityRemainingColumn; // Value injected by FXMLLoader
 
-    @FXML // fx:id="quantityRemainingColumn1"
+    @FXML // fx:id="ssdColumn"
     private TableColumn<Order, String> ssdColumn; // Value injected by FXMLLoader
 
 
-    @FXML
-    void addOperator(ActionEvent event) throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AddOperatorView.fxml"));
-        AddOperatorViewController addOperatorView = new AddOperatorViewController(sessionFactory);
-        loader.setController(addOperatorView);
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-        addOperatorView.setStage(stage);
-        GridPane pane = loader.load();
-        stage.setResizable(false);
-        stage.setScene(new Scene(pane));
-        stage.initModality(Modality.APPLICATION_MODAL);
-        Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 -> stage.close());
-        stage.show();
+    @FXML // fx:id="buttonBar"
+    private ButtonBar buttonBar; // Value injected by FXMLLoader
+
+    @FXML // fx:id="exitButton"
+    private Button exitButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="coaButton"
+    private Button coaButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="assignCOAButton"
+    private Button assignCOAButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="editOrderButton"
+    private Button editOrderButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="completeOrderButton"
+    private Button completeOrderButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="createOrderButton"
+    private Button createOrderButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="addOperatorButton"
+        private Button addOperatorButton; // Value injected by FXMLLoader
+
+
+        @FXML
+        void addOperator(ActionEvent event) throws IOException
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AddOperatorView.fxml"));
+            AddOperatorViewController addOperatorView = new AddOperatorViewController(sessionFactory);
+            loader.setController(addOperatorView);
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            addOperatorView.setStage(stage);
+            GridPane pane = loader.load();
+            stage.setResizable(false);
+            stage.setScene(new Scene(pane));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            Functions.setUpIcons(stage);
+            stage.setOnCloseRequest(event1 -> stage.close());
+            stage.show();
+        }
+
+        @FXML
+        void assignCOA(ActionEvent event) throws IOException
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AssignCOAView.fxml"));
+            AssignCOAViewController assignCOAViewController = new AssignCOAViewController(sessionFactory);
+            loader.setController(assignCOAViewController);
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            assignCOAViewController.setStage(stage);
+            GridPane pane = loader.load();
+            stage.setResizable(false);
+            stage.setScene(new Scene(pane));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            Functions.setUpIcons(stage);
+            stage.setOnCloseRequest(event1 -> stage.close());
+            stage.show();
+        }
+
+        @FXML
+        void createOrder(ActionEvent event) throws IOException
+        {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/CreateOrderView.fxml"));
+            CreateOrderViewController createOrderViewController = new CreateOrderViewController(sessionFactory);
+            loader.setController(createOrderViewController);
+            Stage stage = new Stage(StageStyle.UNDECORATED);
+            createOrderViewController.setStage(stage);
+            GridPane pane = loader.load();
+            stage.setResizable(false);
+            stage.setTitle("Create Order");
+            stage.setScene(new Scene(pane));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            Functions.setUpIcons(stage);
+            stage.setOnCloseRequest(event1 -> stage.close());
+            stage.show();
+        }
+
+        @FXML
+        void coaDashboard(ActionEvent event) throws IOException
+        {
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/COADashboard.fxml"));
+            COADashboardController coaDashboardController = new COADashboardController(sessionFactory,stage);
+            loader.setController(coaDashboardController);
+            GridPane pane = loader.load();
+            stage.setTitle("COA Dashboard");
+            final UndecoratorScene undecoratorScene = new UndecoratorScene(stage, pane);
+            stage.setScene(undecoratorScene);
+            Functions.setUpIcons(stage);
+            stage.setOnCloseRequest(event1 -> stage.close());
+            stage.show();
+            this.stage.hide();
     }
 
-    @FXML
-    void assignCOA(ActionEvent event) throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/AssignCOAView.fxml"));
-        AssignCOAViewController assignCOAViewController = new AssignCOAViewController(sessionFactory);
-        loader.setController(assignCOAViewController);
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-        assignCOAViewController.setStage(stage);
-        GridPane pane = loader.load();
-        stage.setResizable(false);
-        stage.setScene(new Scene(pane));
-        stage.initModality(Modality.APPLICATION_MODAL);
-        Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 -> stage.close());
-        stage.show();
-    }
-
-    @FXML
-    void createOrder(ActionEvent event) throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/CreateOrderView.fxml"));
-        CreateOrderViewController createOrderViewController = new CreateOrderViewController(sessionFactory);
-        loader.setController(createOrderViewController);
-        Stage stage = new Stage(StageStyle.UNDECORATED);
-        createOrderViewController.setStage(stage);
-        GridPane pane = loader.load();
-        stage.setResizable(false);
-        stage.setTitle("Create Order");
-        stage.setScene(new Scene(pane));
-        stage.initModality(Modality.APPLICATION_MODAL);
-        Functions.setUpIcons(stage);
-        stage.setOnCloseRequest(event1 -> stage.close());
-        stage.show();
-    }
-
-    @FXML
-    void createCOA(ActionEvent event) throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/CreateCOAToOrderView.fxml"));
-        CreateCOAToOrderViewController createCOAToOrderViewController = new CreateCOAToOrderViewController(sessionFactory);
-        loader.setController(createCOAToOrderViewController);
-        Stage _stage = new Stage(StageStyle.UNDECORATED);
-        createCOAToOrderViewController.setStage(_stage);
-        GridPane pane = loader.load();
-        _stage.setScene(new Scene(pane));
-        _stage.setResizable(false);
-        Functions.setUpIcons(_stage);
-        _stage.setOnCloseRequest(event1 -> _stage.close());
-        _stage.show();
-    }
 
     /**
      * @param event ActionEvent passed down through JavaFX
@@ -266,23 +269,22 @@ public class DashboardViewController implements Initializable
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
-    private void initialize()
-    {
-        assert pane != null : "fx:id=\"pane\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert openOrder != null : "fx:id=\"openOrder\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert buttonBar != null : "fx:id=\"buttonBar\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert addOperatorButton != null : "fx:id=\"addOperatorButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert assignCOAButton != null : "fx:id=\"assignCOAButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert createCOAButton != null : "fx:id=\"createCOAButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert createOrderButton != null : "fx:id=\"createOrderButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert completeOrderButton != null : "fx:id=\"completeOrderButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert editOrderButton != null : "fx:id=\"editOrderButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert orderNumberColumn != null : "fx:id=\"orderNumberColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert quantityColumn != null : "fx:id=\"quantityColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert quantityRemainingColumn != null : "fx:id=\"quantityRemainingColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
-        assert ssdColumn != null : "fx:id=\"ssdColumn\" was not injected: check your FXML file 'OpenOrdersView.fxml'.";
+    void initialize() {
+        assert pane != null : "fx:id=\"pane\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert openOrder != null : "fx:id=\"openOrder\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert orderNumberColumn != null : "fx:id=\"orderNumberColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert quantityColumn != null : "fx:id=\"quantityColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert quantityRemainingColumn != null : "fx:id=\"quantityRemainingColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert ssdColumn != null : "fx:id=\"ssdColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert buttonBar != null : "fx:id=\"buttonBar\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert coaButton != null : "fx:id=\"coaButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert assignCOAButton != null : "fx:id=\"assignCOAButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert editOrderButton != null : "fx:id=\"editOrderButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert completeOrderButton != null : "fx:id=\"completeOrderButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert createOrderButton != null : "fx:id=\"createOrderButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert addOperatorButton != null : "fx:id=\"addOperatorButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
     }
 
     /**
@@ -393,6 +395,7 @@ public class DashboardViewController implements Initializable
     {
 
         @Override
+        @SuppressWarnings("Duplicates")
         protected Task<Void> createTask()
         {
             return new Task<Void>()

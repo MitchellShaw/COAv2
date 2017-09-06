@@ -24,14 +24,6 @@ public class Order
     private int orderNumber;
 
     @Transient
-    private SimpleStringProperty orderNumberProperty = new SimpleStringProperty();
-    @Transient
-    private SimpleStringProperty quantityProperty = new SimpleStringProperty();
-    @Transient
-    private SimpleStringProperty quantityRemainingProperty = new SimpleStringProperty();
-    @Transient
-    private SimpleStringProperty scheduleShipDateProperty = new SimpleStringProperty();
-    @Transient
     private int completed = 0;
 
     /**
@@ -223,119 +215,7 @@ public class Order
                 '}';
     }
 
-    /**
-     * Getter for property 'orderNumberProperty'.
-     *
-     * @return Value for property 'orderNumberProperty'.
-     */
-    public String getOrderNumberProperty()
-    {
-        return String.valueOf(orderNumber);
-    }
-
-    /**
-     * @return Returns the SimpleStringProperty of orderNumberProperty
-     */
-    public SimpleStringProperty orderNumberPropertyProperty()
-    {
-        return orderNumberProperty;
-    }
-
-    /**
-     * Setter for property 'orderNumberProperty'.
-     *
-     * @param orderNumberProperty Value to set for property 'orderNumberProperty'.
-     */
-    public void setOrderNumberProperty(String orderNumberProperty)
-    {
-        this.orderNumberProperty.set(orderNumberProperty);
-    }
-
-    /**
-     * Getter for property 'quantityProperty'.
-     *
-     * @return Value for property 'quantityProperty'.
-     */
-    public String getQuantityProperty()
-    {
-        return String.valueOf(quantity);
-    }
-
-    /**
-     * @return Returns SimpleStringProperty of quantityProperty
-     */
-    public SimpleStringProperty quantityPropertyProperty()
-    {
-        return quantityProperty;
-    }
-
-    /**
-     * Setter for property 'quantityProperty'.
-     *
-     * @param quantityProperty Value to set for property 'quantityProperty'.
-     */
-    public void setQuantityProperty(String quantityProperty)
-    {
-        this.quantityProperty.set(quantityProperty);
-    }
-
-    /**
-     * Getter for property 'quantityRemainingProperty'.
-     *
-     * @return Value for property 'quantityRemainingProperty'.
-     */
-    public String getQuantityRemainingProperty()
-    {
-        return String.valueOf(quantity - completed);
-    }
-
-    /**
-     * @return Returns quantityRemainingPropertyProperty
-     */
-    public SimpleStringProperty quantityRemainingPropertyProperty()
-    {
-        return quantityRemainingProperty;
-    }
-
-    /**
-     * Setter for property 'quantityRemainingProperty'.
-     *
-     * @param quantityRemainingProperty Value to set for property 'quantityRemainingProperty'.
-     */
-    public void setQuantityRemainingProperty(String quantityRemainingProperty)
-    {
-        this.quantityRemainingProperty.set(quantityRemainingProperty);
-    }
-
-    /**
-     * Getter for property 'scheduleShipDateProperty'.
-     *
-     * @return Value for property 'scheduleShipDateProperty'.
-     */
-    public String getScheduleShipDateProperty()
-    {
-        return scheduledShipDate.toString();
-    }
-
-    /**
-     * @return Returns the SimpleStringProperty of scheduleShipDateProperty
-     */
-    public SimpleStringProperty scheduleShipDatePropertyProperty()
-    {
-        return scheduleShipDateProperty;
-    }
-
-    /**
-     * Setter for property 'scheduleShipDateProperty'.
-     *
-     * @param scheduleShipDateProperty Value to set for property 'scheduleShipDateProperty'.
-     */
-    public void setScheduleShipDateProperty(String scheduleShipDateProperty)
-    {
-        this.scheduleShipDateProperty.set(scheduleShipDateProperty);
-    }
-
-    /**
+        /**
      * Getter for property 'completed'.
      *
      * @return Value for property 'completed'.
