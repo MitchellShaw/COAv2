@@ -101,7 +101,6 @@ public class DashboardViewController implements Initializable
     @FXML // fx:id="ssdColumn"
     private TableColumn<Order, String> ssdColumn; // Value injected by FXMLLoader
 
-
     @FXML // fx:id="buttonBar"
     private ButtonBar buttonBar; // Value injected by FXMLLoader
 
@@ -193,7 +192,6 @@ public class DashboardViewController implements Initializable
             Functions.setUpIcons(stage);
             stage.setOnCloseRequest(event1 -> stage.close());
             stage.show();
-            this.stage.hide();
     }
 
 

@@ -183,6 +183,7 @@ public class CreateCOAToOrderViewController implements Initializable
             }
             session.clear();
         }
+        session.close();
 
         //--- Add COA's to these objects list ---//
 
@@ -449,8 +450,8 @@ public class CreateCOAToOrderViewController implements Initializable
         @Override
         protected ObservableList<String> call() throws Exception
         {
-//            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
-            File file = new File("D:\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating Systems.xml");
+            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
+//            File file = new File("D:\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating Systems.xml");
             ObservableList<String> list = FXCollections.observableArrayList();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();

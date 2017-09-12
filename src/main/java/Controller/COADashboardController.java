@@ -118,50 +118,61 @@ public class COADashboardController implements Initializable
     }
 
     @FXML
-    void deleteCOA(ActionEvent event) {
-        COA coa = tableView.getSelectionModel().getSelectedItem();
+    void editCOA(ActionEvent event)
+    {
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/EditCOAView.fxml"));
+        //EditCOAViewController editCOAViewController = new EditCOAViewController(sessionFactory,stage , )
+    }
+
+
+    @FXML
+    void deleteCOA(ActionEvent event)
+    {
+        ObservableList<COA> coaObservableList = tableView.getSelectionModel().getSelectedItems();
         Session session = sessionFactory.openSession();
-        session.getTransaction().begin();
-        Order order = getOrderWithCOA(coa);
-        order.getCoaList().remove(getCOAFromOrderList(order, coa.getSerialNumber()));
-        session.delete(coa);
-        session.update(order);
-        session.getTransaction().commit();
+        for(COA coa: coaObservableList)
+        {
+
+            session.getTransaction().begin();
+            Order order = getOrderWithCOA(coa);
+            order.getCoaList().remove(getCOAFromOrderList(order, coa.getSerialNumber()));
+            session.delete(coa);
+            session.update(order);
+            session.getTransaction().commit();
+            session.clear();
+        }
         session.close();
     }
 
     @FXML
     void delinkCOA(ActionEvent event)
     {
-        COA coa = tableView.getSelectionModel().getSelectedItem();
-        //delete the Unit first ---//
-        //coa = coa.getUnit().getCoa();
-        Unit unit = coa.getUnit();
-        Operator operator = getOperatorWithCOA(coa);
-
-        //COA orderCOA;
-        operator.getCoaList().remove(getCOAFromOperatorList(operator, coa.getSerialNumber()));
-
-        coa.setAssigned(false);
-        coa.setUnit(null);
-
+        ObservableList<COA> coaObservableList = tableView.getSelectionModel().getSelectedItems();
         Session session = sessionFactory.openSession();
-        session.getTransaction().begin();
+        for(COA coa: coaObservableList)
+        {
+            session.getTransaction().begin();
+            Unit unit = coa.getUnit();
+            Operator operator = getOperatorWithCOA(coa);
 
-        session.delete(unit);
-        session.update(operator);
+            //COA orderCOA;
+            operator.getCoaList().remove(getCOAFromOperatorList(operator, coa.getSerialNumber()));
 
-        session.update(coa);
-        session.getTransaction().commit();
+            coa.setAssigned(false);
+            coa.setUnit(null);
+
+            session.delete(unit);
+            session.update(operator);
+
+            session.update(coa);
+            session.getTransaction().commit();
+            session.clear();
+            tableView.refresh();
+        }
         session.close();
-        tableView.refresh();
     }
 
-    @FXML
-    void editCOA(ActionEvent event)
-    {
-
-    }
 
     @FXML
     void exitDashboard(ActionEvent event)
@@ -260,7 +271,7 @@ public class COADashboardController implements Initializable
         databaseService.setRestartOnFailure(true);
         databaseService.setPeriod(Duration.seconds(2));
         databaseService.start();
-        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+        selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
         bindings();
     }
 
@@ -273,7 +284,6 @@ public class COADashboardController implements Initializable
         //--- Can't delete if it's assigned ---//
         BooleanBinding isAssigned = Bindings.createBooleanBinding(() -> selection.get().isAssigned(), selection);
         BooleanBinding notAssigned = Bindings.createBooleanBinding(() -> !selection.get().isAssigned(), selection);
-
 
         editCOA.disableProperty().bind(disable);
         delinkCOAButton.disableProperty().bind(disable.or(notAssigned));
