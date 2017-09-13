@@ -74,7 +74,22 @@
             radial-gradient(center 50% -40%, radius 200%, rgba(85,184,73,1) 45%, rgba(85,184,73,1) 50%);
 }
 
+.task-progress-view .list-view .placeholder .label
+{
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, black, 1, 0.5, 1, 1);
 
+}
+
+.task-progress-view .list-view .placeholder
+{
+    -fx-background-color: #262626;
+}
+
+.task-progress-view .list-view .virtual-flow
+{
+    -fx-background-color: #262626;
+}
 .text-field
 {
     -fx-background-color: #262626;

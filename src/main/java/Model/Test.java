@@ -1,181 +1,193 @@
 package Model;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+import org.controlsfx.control.Notifications;
+import org.controlsfx.control.TaskProgressView;
+import org.controlsfx.dialog.ProgressDialog;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.ListBinding;
-import javafx.beans.binding.LongBinding;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.Pane;
-import javafx.scene.web.WebView;
+public class Test extends Application {
 
-public class Test {
-    @FXML
-    private TextField firstNameTextField ;
-    @FXML
-    private TextField lastNameTextField ;
-    @FXML
-    private TextField emailTextField ;
-    @FXML
-    private TextField zipCodeTextField ;
-    @FXML
-    private Tab nameTab ;
-    @FXML
-    private Tab contactTab ;
-    @FXML
-    private Tab confirmationTab ;
-    @FXML
-    private TabPane tabPane ;
-    @FXML
-    private TitledPane nameTabErrorList ;
-    @FXML
-    private Pane nameTabErrorMessages ;
-    @FXML
-    private TitledPane contactTabErrorList ;
-    @FXML
-    private Pane contactTabErrorMessages ;
-    @FXML
-    private WebView browser ;
-    @FXML
-    private Label nameTabErrorInstructions ;
-    @FXML
-    private Label contactTabErrorInstructions ;
+    private Stage primaryStage;
 
-    public void initialize() {
-        // Bit of a hack. Probably need a ValidationBinding extends BooleanBinding with a message property:
-        Map<BooleanBinding, String> messages = new HashMap<>();
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
+        primaryStage.setTitle("Hello World!");
 
-        tabPane.getSelectionModel().select(nameTab);
-        BooleanBinding firstNameInvalid = emptyTextFieldBinding(firstNameTextField, "First Name is required", messages);
-        BooleanBinding lastNameInvalid = emptyTextFieldBinding(lastNameTextField, "Last Name is required", messages);
-        final Pattern emailPattern = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*@[a-zA-Z][a-zA-Z0-9_]+(\\.[a-zA-Z][a-zA-Z0-9_]*)+");
-        BooleanBinding emailInvalid = patternTextFieldBinding(emailTextField, emailPattern, "You must enter a valid email", messages);
-        final Pattern zipPattern = Pattern.compile("[0-9]{5}");
-        BooleanBinding zipInvalid = patternTextFieldBinding(zipCodeTextField, zipPattern, "You must enter a 5-digit zip code", messages);
+        Button btn = new Button();
+        btn.setText("Run singleTaskService()");
+        btn.setOnAction(event -> singleTaskService());
 
-        BooleanBinding[] nameTabBindings = { firstNameInvalid, lastNameInvalid } ;
-        BooleanBinding[] contactTabBindings = { emailInvalid, zipInvalid } ;
+        Button btn2 = new Button();
+        btn2.setText("Run multipleTasksExecutorOnStage()");
+        btn2.setOnAction(event -> multipleTasksExecutorOnStage());
 
-        BooleanBinding nameTabInvalid = any(nameTabBindings);
-        BooleanBinding contactTabInvalid = any(contactTabBindings);
+        Button btn3 = new Button();
+        btn3.setText("Run multipleTasksExecutorPopup()");
+        btn3.setOnAction(event -> multipleTasksExecutorPopup());
 
-        contactTab.disableProperty().bind(nameTabInvalid);
-        confirmationTab.disableProperty().bind(nameTabInvalid.or(contactTabInvalid));
 
-        nameTabErrorInstructions.visibleProperty().bind(nameTabInvalid);
-        contactTabErrorInstructions.visibleProperty().bind(contactTabInvalid);
-
-        bindMessageLabels(nameTabBindings, nameTabErrorMessages.getChildren(), messages);
-
-        final LongBinding nameTabErrorCount = count(nameTabBindings);
-        nameTabErrorList.textProperty().bind(Bindings.format("%d %s on this page", nameTabErrorCount,
-                Bindings.when(nameTabErrorCount.isEqualTo(1)).then("error").otherwise("errors")));
-
-        bindMessageLabels(contactTabBindings, contactTabErrorMessages.getChildren(), messages);
-
-        final LongBinding contactTabErrorCount = count(contactTabBindings);
-        contactTabErrorList.textProperty().bind(Bindings.format("%d %s on this page", contactTabErrorCount,
-                Bindings.when(contactTabErrorCount.isEqualTo(1)).then("error").otherwise("errors")));
-
-        browser.getEngine().load("http://stackoverflow.com/questions/22772364/javafx-prevent-selection-of-a-different-tab-if-the-data-validation-of-the-selec/");
+        VBox root = new VBox();
+        root.setSpacing(5.0);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(15.0));
+        root.getChildren().addAll(btn, btn2, btn3);
+        primaryStage.setScene(new Scene(root, 300, 250));
+        primaryStage.show();
     }
 
-    private void bindMessageLabels(BooleanBinding[] validationBindings, List<Node> labelList, Map<BooleanBinding, String> messages) {
-        ListBinding<Node> nodeListBinding = new ListBinding<Node>() {
-
-            {
-                // calling bind(...) here won't work, neither will using WeakInvalidationListeners. Not sure why....
-                InvalidationListener invalidationListener = obs -> invalidate();
-                Arrays.stream(validationBindings).forEach(binding ->
-                        binding.addListener(invalidationListener));
-            }
-
+    public Task<Void> task(){
+        return new Task<Void>() {
             @Override
-            protected ObservableList<Node> computeValue() {
-                return FXCollections.observableList(
-                        Arrays.stream(validationBindings)
-                                .filter(BooleanBinding::get)
-                                .map(messages::get).map(Label::new)
-                                .collect(Collectors.toList())
-                );
+            protected Void call()
+                    throws InterruptedException {
+                try {
+                    Thread.sleep(ThreadLocalRandom.current().nextInt(200,2000));
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                }
+                updateMessage("Finding friends . . .");
+                updateProgress(0, 100);
+                for (int i = 0; i < 100; i++) {
+                    if (isCancelled()) {
+                        updateMessage("Cancelled");
+                        break;
+                    }
+
+                    updateProgress(i + 1, 100);
+                    updateMessage("Found " + (i + 1) + " friends!");
+
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException interrupted) {
+                        if (isCancelled()) {
+                            updateMessage("Cancelled");
+                            break;
+                        }
+                    }
+                }
+                updateMessage("Found all.");
+                return null;
+            }
+        };
+    }
+
+    public void multipleTasksExecutorPopup(){
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        List<Task<Void>> tasks = new ArrayList<>();
+        for(int i=0; i<10; i++){
+            Task task = task();
+            executorService.submit(task);
+            tasks.add(task);
+        }
+        TaskProgressView<Task<Void>> view = new TaskProgressView<>();
+        //view.setGraphicFactory(t -> new ImageView(new Image(getClass().getResourceAsStream("/icon.png"))));
+        view.getTasks().addAll(tasks);
+
+
+        final Popup popup = new Popup();
+        popup.setAutoFix(true);
+        popup.setAutoHide(true);
+        popup.setHideOnEscape(true);
+        popup.getContent().add(view);
+        popup.show(primaryStage);
+
+        executorService.shutdown();
+        new Thread(() -> {
+            try {
+                executorService.awaitTermination(1, TimeUnit.MINUTES);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                Platform.runLater(popup::hide);
+            }
+        }).start();
+    }
+
+    public void multipleTasksExecutorOnStage(){
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        List<Task<Void>> tasks = new ArrayList<>();
+        for(int i=0; i<10; i++){
+            Task task = task();
+            executorService.submit(task);
+            tasks.add(task);
+        }
+        TaskProgressView<Task<Void>> view = new TaskProgressView<>();
+        //view.setGraphicFactory(t -> new ImageView(new Image(getClass().getResourceAsStream("/icon.png"))));
+        view.getTasks().addAll(tasks);
+
+
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Tasks");
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(view);
+        dialogStage.setScene(scene);
+        dialogStage.setOnCloseRequest(event -> {
+            executorService.shutdownNow();
+            dialogStage.hide();
+        });
+
+        dialogStage.show();
+        executorService.shutdown();
+        new Thread(() -> {
+            try {
+                executorService.awaitTermination(1, TimeUnit.MINUTES);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                Platform.runLater(dialogStage::hide);
+            }
+        }).start();
+    }
+
+    public void singleTaskService(){
+        Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return task();
             }
         };
 
-        Bindings.bindContent(labelList, nodeListBinding);
-    }
+        ProgressDialog progDiag = new ProgressDialog(service);
+        progDiag.setTitle("Progress Dialog Title");
+        progDiag.initOwner(primaryStage);
+        progDiag.setHeaderText("Header Text");
+        progDiag.initModality(Modality.WINDOW_MODAL);
 
-    private BooleanBinding emptyTextFieldBinding(TextField textField, String message, Map<BooleanBinding, String> messages) {
-        BooleanBinding binding = Bindings.createBooleanBinding(() ->
-                textField.getText().trim().isEmpty(), textField.textProperty());
-        configureTextFieldBinding(binding, textField, message, messages);
-        return binding ;
-    }
-
-    private BooleanBinding patternTextFieldBinding(TextField textField, Pattern pattern, String message, Map<BooleanBinding, String> messages) {
-        BooleanBinding binding = Bindings.createBooleanBinding(() ->
-                !pattern.matcher(textField.getText()).matches(), textField.textProperty());
-        configureTextFieldBinding(binding, textField, message, messages);
-        return binding ;
-    }
-
-    private void configureTextFieldBinding(BooleanBinding binding, TextField textField, String message, Map<BooleanBinding, String> messages) {
-        messages.put(binding, message);
-        if (textField.getTooltip() == null) {
-            textField.setTooltip(new Tooltip());
-        }
-        String tooltipText = textField.getTooltip().getText();
-        binding.addListener((obs, oldValue, newValue) -> {
-            updateTextFieldValidationStatus(textField, tooltipText, newValue, message);
+        progDiag.setOnCloseRequest(event -> {
+            Platform.runLater(() -> {
+                Notifications.create()
+                        .title("Information")
+                        .text("Task done")
+                        .showInformation();
+            });
         });
-        updateTextFieldValidationStatus(textField, tooltipText, binding.get(), message);
+
+        service.start();
+
     }
 
-    private BooleanBinding any(BooleanBinding[] bindings) {
-        return Bindings.createBooleanBinding(() ->
-                Arrays.stream(bindings).anyMatch(BooleanBinding::get), bindings);
-    }
-
-    private LongBinding count(BooleanBinding[] bindings) {
-        return Bindings.createLongBinding(() ->
-                Arrays.stream(bindings).filter(BooleanBinding::get).collect(Collectors.counting()), bindings);
-    }
-
-    private void updateTextFieldValidationStatus(TextField textField,
-                                                 String defaultTooltipText, boolean invalid, String message) {
-        textField.pseudoClassStateChanged(PseudoClass.getPseudoClass("validation-error"), invalid);
-        String tooltipText ;
-        if (invalid) {
-            tooltipText = message;
-        } else {
-            tooltipText = defaultTooltipText;
-        }
-        if (tooltipText == null || tooltipText.isEmpty()) {
-            textField.setTooltip(null);
-        } else {
-            Tooltip tooltip = textField.getTooltip();
-            if (tooltip == null) {
-                textField.setTooltip(new Tooltip(tooltipText));
-            } else {
-                tooltip.setText(tooltipText);
-            }
-        }
+    public static void main(String[] args){
+        launch(args);
     }
 
 }

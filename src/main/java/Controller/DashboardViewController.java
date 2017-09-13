@@ -7,10 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import Model.COA;
-import Model.Functions;
-import Model.Operator;
-import Model.Order;
+import Model.*;
 import insidefx.undecorator.UndecoratorScene;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -22,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -123,7 +121,7 @@ public class DashboardViewController implements Initializable
     private Button createOrderButton; // Value injected by FXMLLoader
 
     @FXML // fx:id="addOperatorButton"
-        private Button addOperatorButton; // Value injected by FXMLLoader
+    private Button addOperatorButton; // Value injected by FXMLLoader
 
 
         @FXML
@@ -208,9 +206,7 @@ public class DashboardViewController implements Initializable
         if(temp != null)
         {
             if((temp.getQuantity() - temp.getCompleted()) > 0)
-            {
-                new Alert(Alert.AlertType.ERROR, "There are still more COA's that need to be assigned.", ButtonType.CLOSE).showAndWait();
-            }
+                new ErrorNotification("Certificate of Authenticity", "There are still more COA's to be assigned", Pos.BASELINE_RIGHT);
             else
             {
                 if((temp.getQuantity() - temp.getCompleted()) == 0)
@@ -443,7 +439,6 @@ public class DashboardViewController implements Initializable
                 }
                 else
                     _orders.add($orderMap.get($order));
-
             }
         }
 
@@ -471,9 +466,7 @@ public class DashboardViewController implements Initializable
             for(Integer $order : $observableMap.keySet())
             {
                 if(!$orderMap.containsKey($order))
-                {
                     _orders.remove($observableMap.get($order));
-                }
             }
         }
 
@@ -505,9 +498,7 @@ public class DashboardViewController implements Initializable
         {
             Map<Integer, Order> _temp = new TreeMap<>();
             for(Order _order: _theList)
-            {
                 _temp.put(_order.getOrderNumber(), _order);
-            }
             return _temp;
         }
 
@@ -519,9 +510,7 @@ public class DashboardViewController implements Initializable
         {
             Map<Integer, Order> _temp = new TreeMap<>();
             for(Order _order: _theList)
-            {
                 _temp.put(_order.getOrderNumber(), _order);
-            }
             return _temp;
         }
     }

@@ -45,11 +45,11 @@ public class COADashboardController implements Initializable
 
     private Scene oldScene;
 
-    MultipleSelectionModel<COA> selectionModel;
+    private MultipleSelectionModel<COA> selectionModel;
 
     private ObservableList<COA> data = FXCollections.observableArrayList();
 
-    public COADashboardController(SessionFactory _factory, Stage _stage)
+    COADashboardController(SessionFactory _factory, Stage _stage)
     {
         sessionFactory = _factory;
         stage = _stage;
@@ -58,7 +58,6 @@ public class COADashboardController implements Initializable
     /**
      * Observable ArrayList to hold the data to submit to the TableView
      */
-
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -95,9 +94,6 @@ public class COADashboardController implements Initializable
     @FXML // fx:id="deleteCOA"
     private Button deleteCOA; // Value injected by FXMLLoader
 
-    @FXML // fx:id="editCOA"
-    private Button editCOA; // Value injected by FXMLLoader
-
     @FXML // fx:id="createCOA"
     private Button createCOA; // Value injected by FXMLLoader
 
@@ -118,22 +114,12 @@ public class COADashboardController implements Initializable
     }
 
     @FXML
-    void editCOA(ActionEvent event)
-    {
-        Stage stage = new Stage();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/EditCOAView.fxml"));
-        //EditCOAViewController editCOAViewController = new EditCOAViewController(sessionFactory,stage , )
-    }
-
-
-    @FXML
     void deleteCOA(ActionEvent event)
     {
         ObservableList<COA> coaObservableList = tableView.getSelectionModel().getSelectedItems();
         Session session = sessionFactory.openSession();
         for(COA coa: coaObservableList)
         {
-
             session.getTransaction().begin();
             Order order = getOrderWithCOA(coa);
             order.getCoaList().remove(getCOAFromOrderList(order, coa.getSerialNumber()));
@@ -190,7 +176,6 @@ public class COADashboardController implements Initializable
         assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'COADashboard.fxml'.";
         assert delinkCOAButton != null : "fx:id=\"removeCOAFromUnit\" was not injected: check your FXML file 'COADashboard.fxml'.";
         assert deleteCOA != null : "fx:id=\"deleteCOA\" was not injected: check your FXML file 'COADashboard.fxml'.";
-        assert editCOA != null : "fx:id=\"editCOA\" was not injected: check your FXML file 'COADashboard.fxml'.";
         assert createCOA != null : "fx:id=\"createCOA\" was not injected: check your FXML file 'COADashboard.fxml'.";
         assert tableView != null : "fx:id=\"tableView\" was not injected: check your FXML file 'COADashboard.fxml'.";
     }
@@ -285,7 +270,6 @@ public class COADashboardController implements Initializable
         BooleanBinding isAssigned = Bindings.createBooleanBinding(() -> selection.get().isAssigned(), selection);
         BooleanBinding notAssigned = Bindings.createBooleanBinding(() -> !selection.get().isAssigned(), selection);
 
-        editCOA.disableProperty().bind(disable);
         delinkCOAButton.disableProperty().bind(disable.or(notAssigned));
         deleteCOA.disableProperty().bind(disable.or(isAssigned));
     }
@@ -384,9 +368,7 @@ public class COADashboardController implements Initializable
             for(Integer $coa : $observableMap.keySet())
             {
                 if(!$coaMap.containsKey($coa))
-                {
                     _coas.remove($observableMap.get($coa));
-                }
             }
         }
 
@@ -422,9 +404,7 @@ public class COADashboardController implements Initializable
         {
             Map<Integer, COA> _temp = new TreeMap<>();
             for(COA _coa: _theList)
-            {
                 _temp.put(Integer.valueOf(_coa.getSerialNumber()), _coa);
-            }
             return _temp;
         }
 
@@ -436,9 +416,7 @@ public class COADashboardController implements Initializable
         {
             Map<Integer, COA> _temp = new TreeMap<>();
             for(COA _coa: _theList)
-            {
                 _temp.put(Integer.valueOf(_coa.getSerialNumber()), _coa);
-            }
             return _temp;
         }
     }
@@ -453,10 +431,8 @@ public class COADashboardController implements Initializable
         for (Operator operator : operatorList) 
         {
             for (COA coa : operator.getCoaList())
-            {
                 if(coa.getSerialNumber().equalsIgnoreCase(_coa.getSerialNumber()))
                     temp = operator;
-            }
         }
         session.close();
         return temp;
@@ -471,13 +447,13 @@ public class COADashboardController implements Initializable
         List<Order> orderList = query.list();
         for (Order order : orderList)
         {
-            for (COA coa : order.getCoaList()) {
+            for (COA coa : order.getCoaList())
                 if(coa.getSerialNumber().equalsIgnoreCase(_coa.getSerialNumber()))
                 {
                     temp = order;
                     break;
                 }
-            }
+
         }
         session.close();
         return temp;
@@ -489,9 +465,7 @@ public class COADashboardController implements Initializable
         for (COA coa : _operator.getCoaList())
         {
             if (coa.getSerialNumber().equalsIgnoreCase(_serialNumber))
-            {
                 temp = coa;
-            }
         }
         return temp;
     }
@@ -502,9 +476,7 @@ public class COADashboardController implements Initializable
         for (COA coa : _order.getCoaList())
         {
             if (coa.getSerialNumber().equalsIgnoreCase(_serialNumber))
-            {
                 temp = coa;
-            }
         }
         return temp;
     }

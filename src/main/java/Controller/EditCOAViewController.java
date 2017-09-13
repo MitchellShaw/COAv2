@@ -31,7 +31,6 @@ public class EditCOAViewController implements Initializable
 
     private ObservableList<String> operators;
 
-
     public EditCOAViewController(SessionFactory _factory, Stage _stage, String _operator, ObservableList<String> _operators ,String _orderNumber, ObservableList<String> _orderNumbers, String _partNumber, ObservableList<String> _partNumbers)
     {
         sessionFactory = _factory;
@@ -77,11 +76,11 @@ public class EditCOAViewController implements Initializable
     void editCOA(ActionEvent event)
     {
         //--- Verify a few things ---//
-
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() {
+    void initialize()
+    {
         assert serialNumberTextField != null : "fx:id=\"serialNumberTextField\" was not injected: check your FXML file 'EditCOAView.fxml'.";
         assert orderNumberChoiceBox != null : "fx:id=\"orderNumberChoiceBox\" was not injected: check your FXML file 'EditCOAView.fxml'.";
         assert partNumberChoiceBox != null : "fx:id=\"partNumberChoiceBox\" was not injected: check your FXML file 'EditCOAView.fxml'.";
@@ -100,7 +99,6 @@ public class EditCOAViewController implements Initializable
         BooleanBinding isOperator = Bindings.createBooleanBinding(() -> operators.contains(selection.get()), selection);
         submitButton.disableProperty().bind(operatorBooleanBinding.or(serialNumberBooleanBinding.or(isOperator)));
     }
-
 
     /**
      * Called to initialize a controller after its root element has been

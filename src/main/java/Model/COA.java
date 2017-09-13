@@ -243,6 +243,4 @@ public class COA
         else
             return "Not Assigned";
     }
-
-
 }

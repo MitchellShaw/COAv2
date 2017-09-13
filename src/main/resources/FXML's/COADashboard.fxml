@@ -50,7 +50,6 @@
           <Button fx:id="exitButton" mnemonicParsing="false" onAction="#exitDashboard" text="Exit" />
             <Button fx:id="delinkCOAButton" layoutX="553.0" layoutY="30.0" mnemonicParsing="false" onAction="#delinkCOA" text="Delink COA" />
             <Button fx:id="deleteCOA" layoutX="820.0" layoutY="30.0" mnemonicParsing="false" onAction="#deleteCOA" text="Delete COA" />
-            <Button fx:id="editCOA" layoutX="729.0" layoutY="30.0" mnemonicParsing="false" onAction="#editCOA" text="Edit COA" />
             <Button fx:id="createCOA" layoutX="817.0" layoutY="30.0" mnemonicParsing="false" onAction="#createCOA" text="Create COA" />
         </buttons>
          <GridPane.margin>

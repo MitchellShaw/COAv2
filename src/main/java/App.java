@@ -3,6 +3,7 @@ import Model.*;
 import insidefx.undecorator.UndecoratorScene;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -63,6 +64,7 @@ public class App extends Application
         primaryStage.setScene(undecoratorScene);
         primaryStage.toFront();
         primaryStage.show();
+        Notification notification = new Notification("Title","Make sure Image can be loaded", Pos.BASELINE_RIGHT);
     }
 
 

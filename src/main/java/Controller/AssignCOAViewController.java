@@ -12,6 +12,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -191,7 +192,7 @@ public class AssignCOAViewController implements Initializable
             coa.setAssigned(true);
 
             if (!selectedOrder.updateCOA(coa)) {
-                new Alert(Alert.AlertType.ERROR, "Could not update COA in order coa list", ButtonType.CLOSE).showAndWait();
+                new ErrorNotification("COA Assignment", "Could not update COA\nin order COAL list", Pos.BASELINE_RIGHT);
             }
 
             //--- Once COA object retrieved, set the COA for the unit object ---//
@@ -203,7 +204,7 @@ public class AssignCOAViewController implements Initializable
             session.update(selectedOrder);
             session.getTransaction().commit();
             session.close();
-            new Alert(Alert.AlertType.INFORMATION, "Successfully assigned COA to unit", ButtonType.CLOSE).showAndWait();
+            new Notification("Certificate of Authenticity", "Successfully assigned " + coa.getSerialNumber() + " to " + unit.getSerialNumber(), Pos.BASELINE_RIGHT);
             serialNumberTextField.setText("");
             scheduleNumberTextField.setText("");
             coaSerialChoiceBox.getItems().remove(coaSerialChoiceBox.getValue());
@@ -343,7 +344,7 @@ public class AssignCOAViewController implements Initializable
         }
         else
         {
-            new Alert(Alert.AlertType.ERROR, "No open Orders exists, tell your Leadership to create it",ButtonType.CLOSE).showAndWait();
+            new ErrorNotification("Orders", "No Open Orders exists, tell the leadership to create it", Pos.BASELINE_RIGHT);
             session.close();
             stage.close();
         }
@@ -371,7 +372,7 @@ public class AssignCOAViewController implements Initializable
      */
     private void displayErrorMessage(String _message, ActionEvent _event)
     {
-        new Alert(Alert.AlertType.ERROR, _message, ButtonType.CLOSE).showAndWait();
+        new ErrorNotification("Certificate of Authenticity", _message, Pos.BASELINE_RIGHT);
         _event.consume();
     }
 

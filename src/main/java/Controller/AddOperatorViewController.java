@@ -4,11 +4,14 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import Model.ErrorNotification;
+import Model.Notification;
 import Model.Operator;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -122,10 +125,10 @@ public class AddOperatorViewController implements Initializable
             session.save(operator);
             session.getTransaction().commit();
             session.close();
-            new Alert(Alert.AlertType.INFORMATION, String.format("User %s created successfully", rqsIDTextField.getText()), ButtonType.CLOSE).showAndWait();
+            new Notification("Operator", rqsIDTextField.getText() + " added to the database successfully", Pos.BASELINE_RIGHT);
         }
         else
-            new Alert(Alert.AlertType.ERROR, String.format("User %s already exist in the database",rqsIDTextField.getText()), ButtonType.CLOSE).showAndWait();
+            new ErrorNotification("Operator", rqsIDTextField.getText() + " is already in the database", Pos.BASELINE_RIGHT);
     }
 
     /**
