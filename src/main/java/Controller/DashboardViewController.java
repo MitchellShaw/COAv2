@@ -71,7 +71,6 @@ public class DashboardViewController implements Initializable
         sessionFactory = _factory;
     }
 
-
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -104,6 +103,9 @@ public class DashboardViewController implements Initializable
 
     @FXML // fx:id="exitButton"
     private Button exitButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="reportButton"
+    private Button reportButton; // Value injected by FXMLLoader
 
     @FXML // fx:id="coaButton"
     private Button coaButton; // Value injected by FXMLLoader
@@ -240,15 +242,15 @@ public class DashboardViewController implements Initializable
         if(temp != null)
         {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/EditOrderView.fxml"));
-            Stage editStage = new Stage(StageStyle.UNDECORATED);
-            EditOrderViewController editOrderViewController = new EditOrderViewController(sessionFactory, editStage, temp.getOrderNumber(), temp.getScheduledShipDate(), temp.getQuantity());
+            Stage stage1 = new Stage(StageStyle.UNDECORATED);
+            EditOrderViewController editOrderViewController = new EditOrderViewController(sessionFactory, stage1, temp.getOrderNumber(), temp.getScheduledShipDate(), temp.getQuantity());
             loader.setController(editOrderViewController);
             GridPane gridPane = loader.load();
-            Functions.setUpIcons(editStage);
-            editStage.initModality(Modality.APPLICATION_MODAL);
-            editStage.setOnCloseRequest(event1 -> editStage.close());
-            editStage.setScene(new Scene(gridPane));
-            editStage.show();
+            Functions.setUpIcons(stage1);
+            stage1.initModality(Modality.APPLICATION_MODAL);
+            stage1.setOnCloseRequest(event1 -> stage1.close());
+            stage1.setScene(new Scene(gridPane));
+            stage1.show();
         }
     }
 
@@ -262,6 +264,20 @@ public class DashboardViewController implements Initializable
         System.exit(0);
     }
 
+    @FXML
+    void viewReport(ActionEvent event) throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML's/ReportView.fxml"));
+        Stage stage1 = new Stage(StageStyle.UNDECORATED);
+        ReportViewController reportViewController = new ReportViewController(sessionFactory, stage1);
+        loader.setController(reportViewController);
+        GridPane gridPane = loader.load();
+        Functions.setUpIcons(stage1);
+        stage1.setOnCloseRequest(event1 -> stage1.close());
+        stage1.setScene(new Scene(gridPane));
+        stage1.show();
+    }
+
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert pane != null : "fx:id=\"pane\" was not injected: check your FXML file 'DashboardView.fxml'.";
@@ -273,6 +289,7 @@ public class DashboardViewController implements Initializable
         assert ssdColumn != null : "fx:id=\"ssdColumn\" was not injected: check your FXML file 'DashboardView.fxml'.";
         assert buttonBar != null : "fx:id=\"buttonBar\" was not injected: check your FXML file 'DashboardView.fxml'.";
         assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
+        assert reportButton != null : "fx:id=\"reportButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
         assert coaButton != null : "fx:id=\"coaButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
         assert assignCOAButton != null : "fx:id=\"assignCOAButton\" was not injected: check your FXML file 'DashboardView.fxml'.";
         assert editOrderButton != null : "fx:id=\"editOrderButton\" was not injected: check your FXML file 'DashboardView.fxml'.";

@@ -380,10 +380,7 @@ public class CreateCOAToOrderViewController implements Initializable
             List<Order> orderList = query.list();
             ObservableList<String> orders = FXCollections.observableArrayList();
             for(Order order : orderList)
-            {
                 orders.add(String.valueOf(order.getOrderNumber()));
-                //--- System.out.println(MessageFormat.format("Order: {0}",order.getOrderNumber())); --/
-            }
             session.close();
             if(orders.size() > 0)
                 return orders;
@@ -450,7 +447,7 @@ public class CreateCOAToOrderViewController implements Initializable
         @Override
         protected ObservableList<String> call() throws Exception
         {
-            File file = new File("\\\\153.61.177.74\\d\\Programs\\COA\\Types of COAs.xml");
+            File file = new File("\\\\153.61.177.142\\d\\Programs\\COA\\Types of COAs.xml");
 //            File file = new File("D:\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating Systems.xml");
             ObservableList<String> list = FXCollections.observableArrayList();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

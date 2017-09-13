@@ -57,6 +57,11 @@
                         <Font size="15.0" />
                     </font>
                 </Button>
+            <Button fx:id="reportButton" layoutX="253.0" layoutY="10.0" mnemonicParsing="false" onAction="#viewReport" text="Report">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
             <Button fx:id="coaButton" layoutX="358.0" layoutY="10.0" mnemonicParsing="false" onAction="#coaDashboard" text="COA">
                <font>
                   <Font size="15.0" />
