@@ -116,8 +116,23 @@ public class CreateCOAToOrderViewController implements Initializable
                 //--- Get the format of all COA's to set a standard ---//
                 //--- if(coaSerialTextField is not in the correct format say so here )
                 //---   {}
-                addCOA();
-                coaTextField.setText("");
+
+
+                int loop = Integer.parseInt(quantity.getText());
+
+                Order _order = getOrder(orderNumberChoiceBox.getValue());
+
+                if(_order.getQuantity() >= loop)
+                {
+                    addCOA();
+                    coaTextField.setText("");
+                }
+                else
+                {
+
+                    new Alert(Alert.AlertType.ERROR, "Order quantity mismatch, entry is too large.", ButtonType.CLOSE).showAndWait();
+                    event.consume();
+                }
             }
             else
             {
@@ -152,6 +167,7 @@ public class CreateCOAToOrderViewController implements Initializable
         assert operator != null;
 
         int loop = Integer.parseInt(quantity.getText());
+
         Session session = sessionFactory.openSession();
 
         int serialNumber = Integer.parseInt(coaTextField.getText());
@@ -447,7 +463,7 @@ public class CreateCOAToOrderViewController implements Initializable
         @Override
         protected ObservableList<String> call() throws Exception
         {
-            File file = new File("\\\\153.61.177.142\\d\\Programs\\COA\\Types of COAs.xml");
+            File file = new File("\\\\susmid8000\\d\\Programs\\COA\\Types of COAs.xml");
 //            File file = new File("D:\\IdeaProjects\\COA\\src\\main\\resources\\Files\\Operating Systems.xml");
             ObservableList<String> list = FXCollections.observableArrayList();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
